@@ -1,19 +1,25 @@
 
-"use client";
 
 import React from 'react';
 
-type Props = {};
+type Child = {
+  id: number,
+  name: string,
+  username: string,
+  email: string,
+  address: Object,
+  phone: string,
+  website: string,
+  company: Object
+};
 
-export const ChildrenListComponent: React.FC = () => {
+export default function ChildrenListComponent ({ childrenData }: { childrenData: Child[] }){
 
 
-
-  const children = [
-    { id: 1, name: 'Alice', midname: 'A', lastname: 'Johnson', age: 10, class: '5A', teacher: 'Mr. Doe', gender: 'Female' },
-    { id: 2, name: 'Bob', midname: 'B', lastname: 'Brown', age: 9, class: '4B', teacher: 'Ms. Smith', gender: 'Male' },
-  ];
-
+  // const children = [
+  //   { id: 1, name: 'Alice', midname: 'A', lastname: 'Johnson', age: 10, class: '5A', teacher: 'Mr. Doe', gender: 'Female' },
+  //   { id: 2, name: 'Bob', midname: 'B', lastname: 'Brown', age: 9, class: '4B', teacher: 'Ms. Smith', gender: 'Male' },
+  // ];
 
   return (
     <div>
@@ -32,7 +38,7 @@ export const ChildrenListComponent: React.FC = () => {
           </tr>
           </thead>
           <tbody>
-          {children.map(child => (
+          {childrenData.map( (child:any) => (
             <tr key={child.id}>
               <td className="px-4 py-2 border-b">{child.name}</td>
               <td className="px-4 py-2 border-b">{child.midname}</td>

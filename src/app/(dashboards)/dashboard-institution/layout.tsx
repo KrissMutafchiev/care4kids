@@ -3,10 +3,8 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
 
-const DashboardLayout = ({ children }) => {
-  const { pathname } = usePathname();
+const DashboardLayout = ({ children }:any) => {
 
 
   return (
@@ -26,15 +24,16 @@ const DashboardLayout = ({ children }) => {
           <nav className="mt-4 w-full">
             <ul className="space-y-2">
               <li><Link href="/dashboard-institution" className="text-blue-600 hover:underline">Dashboard</Link></li>
-              <li><Link href={`/` + pathname + `/teachers`} className="text-blue-600 hover:underline">Teachers</Link></li>
+              <li><Link href="/dashboard-institution/teachers" className="text-blue-600 hover:underline">Teachers</Link></li>
               <li><Link href="/dashboard-institution/children" className="text-blue-600 hover:underline">Children</Link></li>
               <li><Link href="/dashboard-institution/settings" className="text-blue-600 hover:underline">Settings</Link></li>
             </ul>
           </nav>
         </div>
       </div>
-
+      <div className="w-full p-4 ">
       {children}
+      </div>
     </div>
   );
 };
