@@ -38,8 +38,8 @@ const DashboardInstitution: React.FC = () => {
   ];
 
   const children = [
-    { id: 1, name: 'Alice', midname: 'A', lastname: 'Johnson', age: 10, class: '5A', teacher: 'Mr. Doe', gender: 'Female' },
-    { id: 2, name: 'Bob', midname: 'B', lastname: 'Brown', age: 9, class: '4B', teacher: 'Ms. Smith', gender: 'Male' },
+    { id: 1, name: 'Alice', midname: 'A', lastname: 'Johnson', age: 10, class: '5A', teacher: 'Mr. Doe', gender: 'Female' , avatarImg:'/default-kid-avatar.png'},
+    { id: 2, name: 'Bob', midname: 'B', lastname: 'Brown', age: 9, class: '4B', teacher: 'Ms. Smith', gender: 'Male' ,avatarImg:'/default-kid-avatar.png'},
   ];
 
   return (
