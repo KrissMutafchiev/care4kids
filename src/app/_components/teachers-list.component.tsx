@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Image from "next/image";
+import {GenerateTeacherComponent} from "@/app/_components/generate-teacher.component";
 
 type Props = {};
 
@@ -118,11 +119,12 @@ export const TeachersListComponent: React.FC = () => {
       avatarImg: "/default-woman-avatar.png",
     },
   ];
-  
+
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+      <div
+        className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
         <div className="flex grid-cols-2 gap-2">
           <button
             id="dropdownActionButton"
@@ -141,9 +143,9 @@ export const TeachersListComponent: React.FC = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="m1 1 4 4 4-4"
               />
             </svg>
@@ -214,9 +216,9 @@ export const TeachersListComponent: React.FC = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
               />
             </svg>
@@ -231,112 +233,112 @@ export const TeachersListComponent: React.FC = () => {
       </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="p-4">
+        <tr>
+          <th scope="col" className="p-4">
+            <div className="flex items-center">
+              <input
+                id="checkbox-all-search"
+                type="checkbox"
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label htmlFor="checkbox-all-search" className="sr-only">
+                checkbox
+              </label>
+            </div>
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Name
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Class
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Email
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Phone
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Status
+          </th>
+          <th scope="col" className="px-6 py-3">
+            Action
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        {teachers.map(teacher => (
+          <tr
+            key={teacher.id}
+            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            <td className="w-4 p-4">
               <div className="flex items-center">
                 <input
-                  id="checkbox-all-search"
+                  id="checkbox-table-search-1"
                   type="checkbox"
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
-                <label htmlFor="checkbox-all-search" className="sr-only">
+                <label htmlFor="checkbox-table-search-1" className="sr-only">
                   checkbox
                 </label>
               </div>
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Class
-            </th>{" "}
-            <th scope="col" className="px-6 py-3">
-              Email
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Phone
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Status
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {teachers.map(teacher => (
-            <tr
-              key={teacher.id}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            </td>
+            <th
+              scope="row"
+              className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
             >
-              <td className="w-4 p-4">
-                <div className="flex items-center">
-                  <input
-                    id="checkbox-table-search-1"
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label htmlFor="checkbox-table-search-1" className="sr-only">
-                    checkbox
-                  </label>
+              <Image
+                className="w-10 h-10 rounded-full"
+                src={teacher.avatarImg}
+                alt="Jese image"
+                height={100}
+                width={100}
+              />
+              <div className="ps-3">
+                <div className="text-base font-semibold">
+                  {teacher.name} {teacher.midname} {teacher.lastname}
                 </div>
-              </td>
-              <th
-                scope="row"
-                className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <Image
-                  className="w-10 h-10 rounded-full"
-                  src={teacher.avatarImg}
-                  alt="Jese image"
-                  height={100}
-                  width={100}
-                />
-                <div className="ps-3">
-                  <div className="text-base font-semibold">
-                    {teacher.name} {teacher.midname} {teacher.lastname}
+                {teacher.positions.map((position, index) => (
+                  <div
+                    key={index}
+                    className="font-normal text-gray-500"
+                  >
+                    {position}
                   </div>
-                  {teacher.positions.map((position,index) => (
-                    <div
-                      key={index}
-                      className="font-normal text-gray-500"
-                    >
-                      {position}
-                    </div>
-                  ))}
-                </div>
-              </th>
-              <td className="px-6 py-4">
-                {teacher.classes.map((teacherClass, index) =>
-                ( <span key={index} className="grid">
+                ))}
+              </div>
+            </th>
+            <td className="px-6 py-4">
+              {teacher.classes.map((teacherClass, index) =>
+                (<span key={index} className="grid">
                   {teacherClass}
-                </span>) )
-                }
-              </td>
-              <td className="px-6 py-4">{teacher.email}</td>
-              <td className="px-6 py-4">{teacher.phone}</td>
+                </span>))
+              }
+            </td>
+            <td className="px-6 py-4">{teacher.email}</td>
+            <td className="px-6 py-4">{teacher.phone}</td>
 
-              <td className="px-6 py-4">
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                  Online
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                {/* Modal toggle */}
-                <a
-                  href="#"
-                  type="button"
-                  data-modal-target="editUserModal"
-                  data-modal-show="editUserModal"
-                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Edit user
-                </a>
-              </td>
-            </tr>
-          ))}
+            <td className="px-6 py-4">
+              <div className="flex items-center">
+                <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                Online
+              </div>
+            </td>
+            <td className="px-6 py-4">
+              {/* Modal toggle */}
+              <a
+                href="#"
+                type="button"
+                data-modal-target="editUserModal"
+                data-modal-show="editUserModal"
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Edit user
+              </a>
+            </td>
+          </tr>
+        ))}
         </tbody>
       </table>
       {/* <!-- Generate Child Component --> */}
@@ -371,9 +373,9 @@ export const TeachersListComponent: React.FC = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                   />
                 </svg>
@@ -514,7 +516,8 @@ export const TeachersListComponent: React.FC = () => {
               </div>
             </div>
             {/* Modal footer */}
-            <div className="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
+            <div
+              className="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
               <button
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -552,16 +555,17 @@ export const TeachersListComponent: React.FC = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                   />
                 </svg>
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            {/* <GenerateChildComponent /> */}
+            {/* Form to Generate Teachers */}
+            <GenerateTeacherComponent/>
           </div>
         </div>
       </div>

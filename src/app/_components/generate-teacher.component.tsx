@@ -33,7 +33,6 @@ export const GenerateTeacherComponent: React.FC = () => {
 
   return (
   <div>
-    <h2 className="text-xl font-semibold mb-4">Generate Teacher</h2>
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
