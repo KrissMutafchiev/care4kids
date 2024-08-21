@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { TeachersListComponent } from '@/app/_components/teachers-list.component'
+import { Card } from "flowbite-react";
 
 type Props = {};
 
@@ -27,9 +28,10 @@ type Props = {};
     const data = await res.json();
     console.log(data)
   };
-  login()
   return (
-    <TeachersListComponent/>
+    <div>
+      <TeachersListComponent/>
+    </div>
   );
 };
 
