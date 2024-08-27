@@ -42,17 +42,32 @@ const InstitutionPanel: React.FC = () => {
     const data = await res.json();
     setInstitutionData(data);
   };
- 
+
+  const csrfToken = async () => {
+    const res = await fetch(
+      "http://localhost:3000/api/csfr",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await res.json();
+    return data
+  };
+
   const login = async () => {
+    //const csfrToken = await csrfToken()
     const res = await fetch(
       "http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080/login",
       {
-        
+
         method: "POST",
         headers: {
           "Access-Control-Allow-Origin":
-            'http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080',
-
+            '*',
+          "X-XSRF-TOKEN":"5e468db3-e060-4368-9ee6-51220f1241dc",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -117,7 +132,7 @@ const InstitutionPanel: React.FC = () => {
   return (
     <div className="w-full p-6 space-y-6">
       <button onClick={fetchInstitutionById}>Get Institution</button>
-      <button onClick={login}>Login</button>
+      <button onClick={csrfToken}>Login</button>
 
       <p>{institutionData?.name}</p>
       <p>{loginData}</p>

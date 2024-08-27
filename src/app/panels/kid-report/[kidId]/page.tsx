@@ -62,16 +62,16 @@ const DashboardKidReport: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Happiness</h2>
             <div className="grid grid-cols-4 gap-4">
               <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-center">
-                <Image src="" alt="Happy 1" width={250} height={250} className="w-12 h-12" /> {/* Replace with actual image path */}
+                <Image src="/sad.png" alt="Happy 1" width={250} height={250} className="w-28 h-24" /> {/* Replace with actual image path */}
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-center">
-                <Image src="" alt="Happy 2" width={250} height={250} className="w-12 h-12" /> {/* Replace with actual image path */}
+                <Image src="/average.png" alt="Happy 2" width={250} height={250} className="w-28 h-24" /> {/* Replace with actual image path */}
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-center">
-                <Image src="" alt="Happy 3" width={250} height={250} className="w-12 h-12" /> {/* Replace with actual image path */}
+                <Image src="/happy.png" alt="Happy 3" width={250} height={250} className="w-28 h-24" /> {/* Replace with actual image path */}
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-center">
-                <Image src="" alt="Happy 4" width={250} height={250} className="w-12 h-12" /> {/* Replace with actual image path */}
+                <Image src="/excitet.png" alt="Happy 4" width={250} height={250} className="w-28 h-24" /> {/* Replace with actual image path */}
               </div>
             </div>
 
@@ -88,14 +88,20 @@ const DashboardKidReport: React.FC = () => {
             <div className="grid grid-cols-3 gap-4">
               <div className="p-4 bg-white shadow-md rounded-lg">
                 <h3 className="font-semibold">Breakfast</h3>
+                <Image src="/breakfast.png" alt="Happy 4" width={250} height={250} className="w-28 h-28" /> {/* Replace with actual image path */}
+
                 <textarea className="mt-2 w-full p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg">
                 <h3 className="font-semibold">Lunch</h3>
+                <Image src="/lunch.png" alt="Happy 4" width={250} height={250}  className="w-28 h-28" /> {/* Replace with actual image path */}
+
                 <textarea className="mt-2 w-full p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg">
                 <h3 className="font-semibold">Snacks</h3>
+                <Image src="/snacks.png" alt="Happy 4" width={250} height={250}  className="w-28 h-28" /> {/* Replace with actual image path */}
+
                 <textarea className="mt-2 w-full p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
               </div>
             </div>
@@ -104,10 +110,13 @@ const DashboardKidReport: React.FC = () => {
           {/* Sleep Section */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-4">Sleep</h2>
-            <div className="flex items-center space-x-4">
-              <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-center">
-                <Image src="" alt="Clock" width={250} height={250} className="w-12 h-12" /> {/* Replace with actual image path */}
-                <div>
+            <div className="grid grid-cols-2 p-4 bg-white shadow-lg rounded-lg">
+              <div className="flex flex-row sm:flex-row ">
+                <div class="">
+                  <Image src="/clock-2.png" alt="Clock" width={350} height={250} className="w-40 h-40" /> {/* Replace with actual image path */}
+                </div>
+                <div class="grid grid-cols-2 flex flex-row justify-between p-4">
+                <div className=" ">
                   <label htmlFor="sleepStart" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start
                     time:</label>
                   <div className="relative">
@@ -124,7 +133,7 @@ const DashboardKidReport: React.FC = () => {
                            min="09:00" max="18:00"  required/>
                   </div>
                 </div>
-                <div>
+                <div className=" ">
                   <label htmlFor="sleepEnd" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End
                     time:</label>
                   <div className="relative">
@@ -141,8 +150,14 @@ const DashboardKidReport: React.FC = () => {
                            min="09:00" max="18:00" required/>
                   </div>
                 </div>
+                  <div class="mt-4 w-full">
+                    <textarea className=" flex-row p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
+                  </div>
+                </div>
               </div>
-              <textarea className="mt-2 w-full p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
+              <div class="flex justify-end">
+                <Image src="/sleep-kid.png" alt="Clock" width={350} height={250} className="w-72 h-56 " /> {/* Replace with actual image path */}
+              </div>
             </div>
           </div>
 
@@ -151,7 +166,7 @@ const DashboardKidReport: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Behavior</h2>
             <div className="grid grid-cols-4 gap-4">
               <div className="p-4 bg-white shadow-md rounded-lg">
-                <Image src="" alt="Behavior 1" width={250} height={250} className="w-12 h-12 mx-auto" /> {/* Replace with actual image path */}
+                <Image src="/agressive-behavior.png" alt="Behavior 1" width={250} height={250} className="w-36 h-36 mx-auto" /> {/* Replace with actual image path */}
                 <textarea className="mt-2 w-full p-2 border rounded-md" rows={2} placeholder="Comment"></textarea>
               </div>
               <div className="p-4 bg-white shadow-md rounded-lg">
