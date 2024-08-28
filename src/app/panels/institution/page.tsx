@@ -35,7 +35,7 @@ const InstitutionPanel: React.FC = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `bearer eyJhbGciOiJIUzM4NCJ9.eyJmdWxsTmFtZSI6IktyaXMgTXV0YWYiLCJzdWIiOiJrcmlzM3Z2LWRpcmVjdG9yNEBnbWFpbC5jb20iLCJpYXQiOjE3MjQxNzkzNTUsImV4cCI6MTcyNDE4Mjk1NSwiYXV0aG9yaXRpZXMiOlsiRElSRUNUT1IiXX0.3WORsMU4u8-unH1O4gXJ5jGORnGdZWeXJTRnHf8Ndnj_CjqS4XhYxtRzsFrgG0oq`,
+          "Authorization": `bearer eyJhbGciOiJIUzM4NCJ9.eyJmdWxsTmFtZSI6IktyaXMgTXV0YWYiLCJzdWIiOiJrcmlzM3Z2LWRpcmVjdG9yNEBnbWFpbC5jb20iLCJpYXQiOjE3MjQxNzkzNTUsImV4cCI6MTcyNDE4Mjk1NSwiYXV0aG9yaXRpZXMiOlsiRElSRUNUT1IiXX0.3WORsMU4u8-unH1O4gXJ5jGORnGdZWeXJTRnHf8Ndnj_CjqS4XhYxtRzsFrgG0oq`,
         },
       }
     );
@@ -43,41 +43,10 @@ const InstitutionPanel: React.FC = () => {
     setInstitutionData(data);
   };
  
-  const login = async () => {
-    const res = await fetch(
-      "http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080/login",
-      {
-        
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin":
-            'http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080',
 
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "kris3vv-director4@gmail.com",
-          password: "test1",
-        }),
-      }
-    );
-    const data = await res.json();
-    setLogin(data);
-  };
 
-  const dummyData = async () => {
-    const res = await fetch(
-      "https://jsonplaceholder.typicode.com/users",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await res.json();
-    setLogin(data);
-  };
+
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -117,7 +86,6 @@ const InstitutionPanel: React.FC = () => {
   return (
     <div className="w-full p-6 space-y-6">
       <button onClick={fetchInstitutionById}>Get Institution</button>
-      <button onClick={login}>Login</button>
 
       <p>{institutionData?.name}</p>
       <p>{loginData}</p>
