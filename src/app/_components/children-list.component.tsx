@@ -19,8 +19,8 @@ export default function ChildrenListComponent({
   childrenData: any[];
 }) {
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+    <div className="relative overflow-x-auto  sm:rounded-lg p-6">
+      <div className="flex p-6 items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
         <div className="flex grid-cols-2 gap-2">
           <button
             id="dropdownActionButton"
