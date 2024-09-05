@@ -4,9 +4,28 @@ import ChildrenListComponent from "@/app/_components/children-list.component";
 type Props = {};
 
 const ChildrenList: React.FC = async () => {
-  // const response: any = await fetch(
-  //   "https://jsonplaceholder.typicode.com/users"
-  // );
+ 
+
+
+  const response = await fetch(
+    "http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080/login",
+    {
+      method: "POST",
+      headers: {
+        "X-XSRF-TOKEN": "cf0a802f-a8e5-4e16-8cc3-f29e4aa834b0", // Use the appropriate CSRF token if needed
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "email": "kris3vv-director4@gmail.com", "password": "test1" }), // Send the extracted email and password
+    }
+  );
+  //console.log(response.body);
+  // if (!response.ok) {
+  //   throw new Error('Failed to fetch User ');
+  // }
+
+  const user = await response;
+  console.log('---->',user);
+
   const children = [
     {
       id: 1,

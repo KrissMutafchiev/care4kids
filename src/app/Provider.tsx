@@ -2,13 +2,14 @@
 
 import {SessionProvider} from "next-auth/react";
 
-import React ,{ReactNode} from 'react';
+import React ,{ReactNode , useEffect} from 'react';
 
 interface Props {
   children:ReactNode
 }
 
-function Provider ( {children}:Props) {
+function Provider({ children }: Props) {
+  
   return <SessionProvider>{children}</SessionProvider>
 }
 

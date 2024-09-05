@@ -1,13 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React , { useEffect , useState} from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { User } from "../../types/interfaces";
 
 const PanelLayout = ({children}: any) => {
 
+  const { data: session,status } = useSession();
+  const [userData, setUserData] = useState<User>();
 
+
+   useEffect(() => {
+      console.log(session)
+    setUserData(session?.user as User)
+   }, [session])
+  
+  
   return (
+    status === "loading" ? <div>Loading...</div> :
     <div >
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -48,10 +60,10 @@ const PanelLayout = ({children}: any) => {
                   id="dropdown-user">
                   <div className="px-4 py-3" role="none">
                     <p className="text-sm text-gray-900 dark:text-white" role="none">
-                      Neil Sims
+                      {userData?.firstName} {userData?. lastName}
                     </p>
                     <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                      neil.sims@flowbite.com
+                    {userData?.email}
                     </p>
                   </div>
                   <ul className="py-1" role="none">

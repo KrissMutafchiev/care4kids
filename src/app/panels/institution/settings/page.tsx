@@ -2,7 +2,7 @@
 "use client";
 
 import React from 'react';
-import {ChildrenListComponent} from "@/app/_components/children-list.component";
+import ChildrenListComponent from "@/app/_components/children-list.component";
 
 type Props = {};
 

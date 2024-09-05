@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
 import {signIn} from "next-auth/react";
-import React from "react";
+import React, {useEffect} from "react";
 
 
 export default function Home() {
   
+
+
   return (
     <main className="">
 

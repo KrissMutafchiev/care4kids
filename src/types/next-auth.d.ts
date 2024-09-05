@@ -1,8 +1,7 @@
-
-declare module  "next-auth" {
-  import {User} from "@/types/interfaces";
+declare module "next-auth" {
+  import { User } from "@/types/interfaces";
 
   interface Session {
-    user: User
+    user: User;
   }
 }

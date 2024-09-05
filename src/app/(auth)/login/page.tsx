@@ -8,57 +8,36 @@ type Props = {};
 
 const Login = (props: Props) => {
 
-  const [csrfToken, setCsrfToken] = useState(null);
 
   const email = useRef("");
   const pass = useRef("");
 
 
-  useEffect(() => {
-    const fetchCsrfToken = async () => {
-      try {
-        const response = await fetch('/api/auth/csrf');
-        const data = await response.json();
-        setCsrfToken(data.csrfToken);
-      } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-      }
-    };
+  const fetchLogin = async () => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: "POST",
+        body:JSON.stringify({ email:email.current, password:pass.current})
+      });
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching User token:', error);
+    }
+  };
 
-    fetchCsrfToken();
-  }, []);
-
+  
 
 
   const onSubmit = async (event:any) => {
     event.preventDefault();
 
-    // const result = await signIn("credentials", {
-    //   username: email.current,
-    //   password: pass.current,
-    // csrfToken,
-    //   redirect: true,
-    //   callbackUrl: "/panels/institution",
-    // });
-
-    const res = await fetch(
-      "http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080/login",
-      {
-        method: "POST",
-        headers: {
-          'Access-Control-Allow-Origin':'*',
-          "X-XSRF-TOKEN": `086f1196-278d-4485-9f87-af5044aa689c`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: `${email.current}`,
-          password: `${pass.current}`,
-        }),
-      }
-    );
-
-    const user = await res.json();
-    console.log(user)
+    const result = await signIn("credentials", {
+      email: email.current,
+      password: pass.current,
+      redirect: true,
+      callbackUrl: "/panels/institution",
+    });
 
   };
 
@@ -138,7 +117,6 @@ const Login = (props: Props) => {
               >
                 Submit
               </button>
-              <span>{ csrfToken}</span>
             </form>
           </div>
         </div>
