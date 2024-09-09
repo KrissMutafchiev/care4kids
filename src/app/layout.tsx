@@ -19,8 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Provider>{children}</Provider>
-        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+      <Provider>
+        {children}
+      </Provider>
       </body>
     </html>
   );

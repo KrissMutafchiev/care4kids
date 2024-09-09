@@ -19,10 +19,6 @@ export default NextAuth({
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
 
-        console.log('-------->Email:',credentials?.email)
-        console.log('-------->Pass:', credentials?.password)
-        
-
         const response = await fetch(
           "http://ec2-3-125-52-214.eu-central-1.compute.amazonaws.com:8080/login",
           {
@@ -60,5 +56,6 @@ export default NextAuth({
   },
   pages: {
     signIn: "/login",
+    signOut: "/login"
   },
 });

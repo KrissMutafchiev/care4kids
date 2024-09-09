@@ -44,9 +44,6 @@ const InstitutionPanel: React.FC = () => {
   };
  
 
-
-
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -84,7 +81,7 @@ const InstitutionPanel: React.FC = () => {
   ];
 
   return (
-    <div className="w-full p-6 space-y-6">
+    <div className="w-full space-y-6">
       <button onClick={fetchInstitutionById}>Get Institution</button>
 
       <p>{institutionData?.name}</p>

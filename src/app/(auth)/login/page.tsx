@@ -1,35 +1,16 @@
 "use client";
 
-import React, { useRef  , useEffect,useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 
 type Props = {};
 
 const Login = (props: Props) => {
-
-
   const email = useRef("");
   const pass = useRef("");
 
-
-  const fetchLogin = async () => {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: "POST",
-        body:JSON.stringify({ email:email.current, password:pass.current})
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching User token:', error);
-    }
-  };
-
-  
-
-
-  const onSubmit = async (event:any) => {
+  const onSubmit = async (event: any) => {
     event.preventDefault();
 
     const result = await signIn("credentials", {
@@ -38,7 +19,6 @@ const Login = (props: Props) => {
       redirect: true,
       callbackUrl: "/panels/institution",
     });
-
   };
 
   return (

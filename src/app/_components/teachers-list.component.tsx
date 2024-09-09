@@ -3,10 +3,14 @@
 import React, {useState} from "react";
 import Image from "next/image";
 import {GenerateTeacherComponent} from "@/app/_components/generate-teacher.component";
+import { Checkbox, Table } from "flowbite-react";
+import {EditTeacherModalComponent} from "@/app/_components/edit-teacher-modal.component";
 
 type Props = {};
 
 export const TeachersListComponent: React.FC = () => {
+  const [openModal, setOpenModal] = useState(false);
+
   const teachers = [
     {
       id: 1,
@@ -231,120 +235,71 @@ export const TeachersListComponent: React.FC = () => {
           />
         </div>
       </div>
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th scope="col" className="p-4">
-            <div className="flex items-center">
-              <input
-                id="checkbox-all-search"
-                type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label htmlFor="checkbox-all-search" className="sr-only">
-                checkbox
-              </label>
-            </div>
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Name
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Class
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Email
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Phone
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Status
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Action
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        {teachers.map(teacher => (
-          <tr
-            key={teacher.id}
-            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-          >
-            <td className="w-4 p-4">
-              <div className="flex items-center">
-                <input
-                  id="checkbox-table-search-1"
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+      <Table hoverable>
+        <Table.Head>
+          <Table.HeadCell className="p-4">
+            <Checkbox />
+          </Table.HeadCell>
+          <Table.HeadCell></Table.HeadCell>
+          <Table.HeadCell>Name</Table.HeadCell>
+          <Table.HeadCell>Role</Table.HeadCell>
+          <Table.HeadCell>Classes</Table.HeadCell>
+          <Table.HeadCell>Email</Table.HeadCell>
+          <Table.HeadCell>Phone</Table.HeadCell>
+          <Table.HeadCell>Action</Table.HeadCell>
+
+        </Table.Head>
+        <Table.Body className="divide-y">
+          {teachers.map(teacher => (
+
+            <Table.Row key={teacher.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+            <Table.Cell className="p-4">
+              <Checkbox />
+            </Table.Cell>
+              <Table.Cell className="p-4">
+                <Image
+                  className="w-10 h-10 rounded-full"
+                  src={teacher.avatarImg}
+                  alt="Jese image"
+                  height={100}
+                  width={100}
                 />
-                <label htmlFor="checkbox-table-search-1" className="sr-only">
-                  checkbox
-                </label>
+              </Table.Cell>
+            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              {teacher.name} {teacher.midname} {teacher.lastname}
+            </Table.Cell>
+            <Table.Cell> {teacher.positions.map((position, index) => (
+              <div
+                key={index}
+                className="font-normal text-gray-500"
+              >
+                {position}
               </div>
-            </td>
-            <th
-              scope="row"
-              className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              <Image
-                className="w-10 h-10 rounded-full"
-                src={teacher.avatarImg}
-                alt="Jese image"
-                height={100}
-                width={100}
-              />
-              <div className="ps-3">
-                <div className="text-base font-semibold">
-                  {teacher.name} {teacher.midname} {teacher.lastname}
-                </div>
-                {teacher.positions.map((position, index) => (
-                  <div
-                    key={index}
-                    className="font-normal text-gray-500"
-                  >
-                    {position}
-                  </div>
-                ))}
-              </div>
-            </th>
-            <td className="px-6 py-4">
+            ))}</Table.Cell>
+            <Table.Cell>
               {teacher.classes.map((teacherClass, index) =>
                 (<span key={index} className="grid">
                   {teacherClass}
                 </span>))
               }
-            </td>
-            <td className="px-6 py-4">{teacher.email}</td>
-            <td className="px-6 py-4">{teacher.phone}</td>
+            </Table.Cell>
+            <Table.Cell>{teacher.email}</Table.Cell>
+              <Table.Cell>{teacher.phone}</Table.Cell>
 
-            <td className="px-6 py-4">
-              <div className="flex items-center">
-                <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
-                Online
-              </div>
-            </td>
-            <td className="px-6 py-4">
-              {/* Modal toggle */}
-              <a
-                href="#"
-                type="button"
-                data-modal-target="editUserModal"
-                data-modal-show="editUserModal"
-                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Edit user
+              <Table.Cell>
+              <a href="#"  onClick={()=>setOpenModal(true)}  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                Edit
               </a>
-            </td>
-          </tr>
-        ))}
-        </tbody>
-      </table>
+            </Table.Cell>
+          </Table.Row>
+            ))}
+        </Table.Body>
+      </Table>
+
       {/* <!-- Generate Child Component --> */}
 
       {/* <!-- Edit user modal --> */}
-
+      <EditTeacherModalComponent openModal={openModal} closeModal={() => setOpenModal(false)} />
       <div
         id="editUserModal"
         tabIndex={-1}
