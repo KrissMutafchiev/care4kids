@@ -10,7 +10,7 @@ type Props = {};
 
 export const TeachersListComponent: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
-
+  const [editTeacher , setEditTeacher] = useState({});
   const teachers = [
     {
       id: 1,
@@ -124,6 +124,17 @@ export const TeachersListComponent: React.FC = () => {
     },
   ];
 
+
+  const handleEditTeacher = (teacherId) =>{
+    const teacher =  teachers.find((item) => {
+     if( item.id === teacherId){
+       return item
+     }
+    })
+    setEditTeacher(teacher)
+    console.log(editTeacher)
+    setOpenModal(true)
+  }
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -287,7 +298,7 @@ export const TeachersListComponent: React.FC = () => {
               <Table.Cell>{teacher.phone}</Table.Cell>
 
               <Table.Cell>
-              <a href="#"  onClick={()=>setOpenModal(true)}  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+              <a href="#"  onClick={()=>handleEditTeacher(teacher.id)}  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                 Edit
               </a>
             </Table.Cell>
@@ -299,7 +310,7 @@ export const TeachersListComponent: React.FC = () => {
       {/* <!-- Generate Child Component --> */}
 
       {/* <!-- Edit user modal --> */}
-      <EditTeacherModalComponent openModal={openModal} closeModal={() => setOpenModal(false)} />
+      <EditTeacherModalComponent openModal={openModal} teacher={editTeacher} closeModal={() => setOpenModal(false)} />
       <div
         id="editUserModal"
         tabIndex={-1}
