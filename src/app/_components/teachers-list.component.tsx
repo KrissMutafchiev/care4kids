@@ -15,7 +15,118 @@ export const TeachersListComponent: React.FC<TeachersListProps> = ({ teachers })
   const [openModal, setOpenModal] = useState(false);
   const [teacher, setTeacher] = useState<Teacher>();
 
-
+  const dummyTeachers = [
+    {
+      id: 1,
+      name: "John",
+      midname: "Roz",
+      lastname: "Doe",
+      classes: ["Math", "Science"],
+      positions: ["Miss", "Medic"],
+      phone: "0892222233",
+      email: "doe@gmail.com",
+      avatarImg: "/default-man-avatar.png",
+    },
+    {
+      id: 2,
+      name: "Jane",
+      midname: "Gregory",
+      lastname: "Smith",
+      classes: ["English", "History"],
+      positions: ["Miss", "Psychologist"],
+      phone: "08922322233",
+      email: "Smith@gmail.com",
+      avatarImg: "/default-woman-avatar.png",
+    },
+    {
+      id: 3,
+      name: "Michael",
+      midname: "Allen",
+      lastname: "Johnson",
+      classes: ["Physics", "Chemistry"],
+      positions: ["Mr.", "Lab Technician"],
+      phone: "08922445566",
+      email: "johnson@gmail.com",
+      avatarImg: "/default-man-avatar.png",
+    },
+    {
+      id: 4,
+      name: "Emily",
+      midname: "Anne",
+      lastname: "Brown",
+      classes: ["Biology", "Physical Education"],
+      positions: ["Miss", "Coach"],
+      phone: "08922556677",
+      email: "brown@gmail.com",
+      avatarImg: "/default-woman-avatar.png",
+    },
+    {
+      id: 5,
+      name: "Christopher",
+      midname: "Lee",
+      lastname: "Davis",
+      classes: ["Geography", "History"],
+      positions: ["Mr.", "Counselor"],
+      phone: "08922667788",
+      email: "davis@gmail.com",
+      avatarImg: "/default-man-avatar.png",
+    },
+    {
+      id: 6,
+      name: "Sophia",
+      midname: "Grace",
+      lastname: "Miller",
+      classes: ["Art", "Music"],
+      positions: ["Miss", "Art Director"],
+      phone: "08922778899",
+      email: "miller@gmail.com",
+      avatarImg: "/default-woman-avatar.png",
+    },
+    {
+      id: 7,
+      name: "Daniel",
+      midname: "James",
+      lastname: "Wilson",
+      classes: ["Computer Science", "Mathematics"],
+      positions: ["Mr.", "IT Specialist"],
+      phone: "08922889900",
+      email: "wilson@gmail.com",
+      avatarImg: "/default-man-avatar.png",
+    },
+    {
+      id: 8,
+      name: "Olivia",
+      midname: "Rose",
+      lastname: "Taylor",
+      classes: ["French", "Literature"],
+      positions: ["Miss", "Librarian"],
+      phone: "08922990011",
+      email: "taylor@gmail.com",
+      avatarImg: "/default-woman-avatar.png",
+    },
+    {
+      id: 9,
+      name: "David",
+      midname: "Alexander",
+      lastname: "Anderson",
+      classes: ["Physics", "Math"],
+      positions: ["Mr.", "Dean"],
+      phone: "08923000122",
+      email: "anderson@gmail.com",
+      avatarImg: "/default-man-avatar.png",
+    },
+    {
+      id: 10,
+      name: "Emma",
+      midname: "Louise",
+      lastname: "Thomas",
+      classes: ["Spanish", "History"],
+      positions: ["Miss", "Head of Department"],
+      phone: "08923112233",
+      email: "thomas@gmail.com",
+      avatarImg: "/default-woman-avatar.png",
+    },
+  ];
 
   const handleEditTeacher = (teacherId: number) => {
     const filteredTeacher = teachers.find((teacher: any) => teacher.id === teacherId);
@@ -147,7 +258,7 @@ export const TeachersListComponent: React.FC<TeachersListProps> = ({ teachers })
           <Table.HeadCell>Action</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {teachers.map(teacher => (
+          {dummyTeachers.map(teacher => (
             <Table.Row
               key={teacher.id}
               className="bg-white dark:border-gray-700 dark:bg-gray-800"

@@ -24,6 +24,7 @@ export async function loginUser(email: string, password: string) {
 
   const data = await response.json();
 
+
   // Return user data if needed
   return data;
 }

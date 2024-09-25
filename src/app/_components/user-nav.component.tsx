@@ -2,11 +2,9 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Avatar, Dropdown } from "flowbite-react"; // Ensure you have Flowbite installed
 import { useRouter } from "next/navigation"; // For client-side navigation
-import { destroyCookie } from 'nookies'; // For cookie management
 
 type User = {
   firstName: string;

@@ -9,7 +9,22 @@ export async function POST(req: NextRequest) {
     const { email, password } = await req.json();
 
     // Call the loginUser function to authenticate and get user data
-    const userData = await loginUser(email, password);
+    //const userData = await loginUser(email, password);
+
+    const userData =   {
+      firstName: "John",
+      middleName: "A.", // Middle name could be null, undefined, or a string
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "+1234567890",
+      position: "Teacher", // Assuming "position" can be a string or any other type
+      roles: [
+        { roleName: "Teacher", permissions: ["create", "read", "update"] },
+        { roleName: "Parent", permissions: ["read"] },
+      ],
+      jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummyJwtPayload.dummyJwtSignature",
+      institutions: [101, 102] // Assuming these are institution IDs
+    };
     const jwtToken = userData.jwtToken;
 
     // Create the response object
@@ -25,7 +40,7 @@ export async function POST(req: NextRequest) {
       maxAge: 30 * 24 * 60 * 60, // Cookie expiration set to 30 days
       path: "/",
       sameSite: "lax", // CSRF protection setting
-    });
+    } as any);
 
     // Store the userData as a cookie (if necessary)
     response.cookies.set("userData", JSON.stringify(userData), {
@@ -34,7 +49,7 @@ export async function POST(req: NextRequest) {
       maxAge: 30 * 24 * 60 * 60, // Cookie expiration set to 30 days
       path: "/",
       sameSite: "lax",
-    });
+    } as any);
 
     // Return the response with cookies attached
     return response;
