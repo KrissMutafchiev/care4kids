@@ -1,11 +1,18 @@
 "use client";
 
 import React, {useState ,useEffect } from "react";
-import { Button, Checkbox, Label, Modal, TextInput ,FileInput} from "flowbite-react";
+import { Button, Label, Modal, TextInput ,FileInput} from "flowbite-react";
 import {customThemeButton, customThemeModal} from "@/app/_components/custom-flowbite-theme"
 import { HiUserAdd } from "react-icons/hi";
+import { Teacher } from "../../types/interfaces";
 
-export const EditTeacherModalComponent: React.FC = ({ openModal, closeModal ,teacher }) => {
+interface ModalProps {
+  openModal: boolean;
+  teacher: Teacher | undefined;
+  closeModal: () => void;
+}
+
+export const EditTeacherModalComponent: React.FC<ModalProps> = ({ openModal, closeModal ,teacher }:any) => {
   const [firstName, setFirstName] = useState('');
   const [midName, setMidName] = useState('');
   const [lastName, setLastName] =  useState('');
@@ -23,20 +30,20 @@ export const EditTeacherModalComponent: React.FC = ({ openModal, closeModal ,tea
   useEffect(() => {
 
     if(teacher){
-      setFirstName(teacher.name);
-      setMidName(teacher.midname);
-      setLastName(teacher.lastname);
+      setFirstName(teacher.firstName);
+      setMidName(teacher.middleName);
+      setLastName(teacher.lastName);
       setRole(teacher.role);
       setClasses(teacher.classes);
       setEmail(teacher.email);
-      setPhone(teacher.phone);
+      setPhone(teacher.phoneNumber);
       setAvatar(teacher.avatarImg);
     }
 
   }, [openModal,closeModal , teacher]); // someProp is the dependency
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
 
     // Collect all data from inputs into a single object

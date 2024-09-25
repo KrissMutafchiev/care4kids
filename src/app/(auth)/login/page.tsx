@@ -2,24 +2,47 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+
+import { useRouter } from 'next/navigation'
 
 type Props = {};
 
 const Login = (props: Props) => {
-  const email = useRef("");
-  const pass = useRef("");
 
-  const onSubmit = async (event: any) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter()
+
+
+  const handleSignIn = async (event: any) => {
     event.preventDefault();
 
-    const result = await signIn("credentials", {
-      email: email.current,
-      password: pass.current,
-      redirect: true,
-      callbackUrl: "/panels/institution",
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed. Please check your credentials.");
+      }
+
+      const data = await response.json();
+      console.log("Login successful:", data);
+      // Redirect user or update UI state
+      router.push('/panels/institution')
+    } catch (err) {
+      console.error("Login error:", err);
+      setError((err as Error).message);
+    }
   };
+
+
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -50,9 +73,10 @@ const Login = (props: Props) => {
                   Your email
                 </label>
                 <input
-                  onChange={e => (email.current = e.target.value)}
                   type="email"
                   id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@flowbite.com"
                   required
@@ -66,9 +90,10 @@ const Login = (props: Props) => {
                   Your password
                 </label>
                 <input
-                  onChange={e => (pass.current = e.target.value)}
                   type="password"
                   id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
@@ -91,7 +116,7 @@ const Login = (props: Props) => {
                 </label>
               </div>
               <button
-                onClick={onSubmit}
+                onClick={handleSignIn}
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
