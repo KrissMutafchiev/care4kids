@@ -1,50 +1,84 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-import { useRouter } from 'next/navigation'
-
 type Props = {};
 
 const Login = (props: Props) => {
 
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const { data: session, status: sessionStatus } = useSession();
 
-  const router = useRouter()
-
-
-  const handleSignIn = async (event: any) => {
-    event.preventDefault();
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Login failed. Please check your credentials.");
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      const role = session?.user?.role;
+      // Redirect based on role
+      if (role === 'superAdmin') {
+        router.push('/panels/admin-dashboard');
+      } else if (role === 'admin') {
+        router.push('/panels/institution');
+      } else if (role === 'teacher') {
+        router.push('/panels/teacher');
+      } else if (role === 'parent') {
+        router.push('/panels/parent');
       }
+         // router.replace("/panels/institution");
+      }
+  }, [sessionStatus, router]);
 
-      const data = await response.json();
-      console.log("Login successful:", data);
-      // Redirect user or update UI state
-      router.push('/panels/institution')
-    } catch (err) {
-      console.error("Login error:", err);
-      setError((err as Error).message);
-    }
+  const isValidEmail = (email: string) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailRegex.test(email);
   };
 
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setError("");
+
+    if (!isValidEmail(email)) {
+        setError("Email is invalid");
+        return;
+    }
+
+    if (!password || password.length < 4) {
+        setError("Password is invalid");
+        return;
+    }
+
+    const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+    });
+
+    if (res?.error) {
+        setError("Invalid email or password");
+        return;
+    }
+
+    // Fetch the session after login
+    const sessionResponse = await fetch("/api/auth/session");
+    const session = await sessionResponse.json();
+
+    if (session?.user?.isFirstLogin) {
+        router.push("/reset-password"); // Redirect first-time users to reset their password
+    } else {
+        router.push("/dashboard"); // Redirect normal users to dashboard (or home)
+    }
+};
 
 
-  return (
+  if (sessionStatus === "loading") {
+    return <h1>Loading...</h1>;
+}
+
+  return  sessionStatus !== "authenticated" && (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
@@ -116,7 +150,7 @@ const Login = (props: Props) => {
                 </label>
               </div>
               <button
-                onClick={handleSignIn}
+                onClick={handleSubmit}
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >

@@ -10,6 +10,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        teal: {
+          DEFAULT: "#008080", // Teal main color
+          light: "#4CBBBC", // Lighter shade
+          dark: "#005F5F", // Darker shade
+        },
+        primary: "#1D4ED8", // Blue
+        success: "#10B981", // Green
+        danger: "#EF4444", // Red
+        neutral: "#6B7280", // Gray
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

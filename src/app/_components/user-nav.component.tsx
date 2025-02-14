@@ -1,33 +1,21 @@
-// components/Navbar.tsx
-
 "use client";
 
 import Image from "next/image";
 import { Avatar, Dropdown } from "flowbite-react"; // Ensure you have Flowbite installed
-import { useRouter } from "next/navigation"; // For client-side navigation
+import { signOut } from "next-auth/react";
 
-type User = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  roles: { name: string }[];
-};
+// type UserInfo = {
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   roles: { name: string }[];
+// };
 
-interface NavbarProps {
-  user: User | null; // Define prop for user data
-}
+// interface NavbarProps {
+//   userData: UserInfo ; // Define prop for user data
+// }
 
-export default function UserNav({ user }: NavbarProps) {
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    // Clear the cookies (jwtToken, userData)
-    await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-    router.push("/login");
-  };
-
+export default function UserNav({ userData }: any) {
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -78,18 +66,13 @@ export default function UserNav({ user }: NavbarProps) {
           >
             <Dropdown.Header>
               <span className="block text-md font-bold ">
-                {user?.firstName} {user?.lastName}
+                {userData?.firstName} {userData?.lastName}
               </span>
-              {user?.roles.map((role: any, index: number) => (
-                <span
-                  key={index}
-                  className=" bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                >
-                  {role?.name}
-                </span>
-              ))}
+              <span className=" bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                {userData?.role}
+              </span>
               <span className="block truncate text-sm font-medium">
-                {user?.email}
+                {userData?.email}
               </span>
               <hr />
             </Dropdown.Header>
@@ -97,7 +80,11 @@ export default function UserNav({ user }: NavbarProps) {
             <Dropdown.Item>Settings</Dropdown.Item>
             <Dropdown.Item>Earnings</Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => signOut({ callbackUrl: "/login", redirect: true })}
+            >
+              Sign out
+            </Dropdown.Item>
           </Dropdown>
         </div>
       </div>

@@ -13,7 +13,6 @@ const InstitutionPanel: React.FC = () => {
   return (
     <div className="w-full p-6 space-y-6">
       {/* Teachers List */}
-      <TeachersListComponent />
     </div>
   );
 };

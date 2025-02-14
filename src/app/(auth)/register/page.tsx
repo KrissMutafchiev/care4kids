@@ -1,11 +1,17 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const CreateAcc = (props: Props) => {
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const { data: session, status: sessionStatus } = useSession();
+
   const institutions = [
     { id: 1, name: "Smurfs" },
     { id: 2, name: "Mouses" },
@@ -14,21 +20,34 @@ const CreateAcc = (props: Props) => {
 
   // State to hold form data
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    institution: "",
+  });
+
+  // State to hold form errors
+  const [formErrors, setFormErrors] = useState({
+    firstName: "",
+    lastName: "",
     password: "",
     confirmPassword: "",
     email: "",
     institution: "",
   });
 
-  // State to hold form errors
-  const [formErrors, setFormErrors] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    institution: "",
-  });
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      router.replace("panels/institution/");
+    }
+  }, [sessionStatus, router]);
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
 
   // Handle input change
   const handleChange = (
@@ -42,33 +61,56 @@ const CreateAcc = (props: Props) => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     // Validate form data
     const errors = validateForm(formData);
     setFormErrors(errors);
 
     // Check if there are no errors
     const isValid = Object.values(errors).every(error => error === "");
+    console.log(errors);
+
     if (isValid) {
       // Submit form data
       console.log("Form submitted successfully:", formData);
-      // You can add API call here to submit the form data to the server
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+          }),
+        });
+        if (res.status === 400) {
+          setError("This email is already registered");
+        }
+        if (res.status === 200) {
+          setError("");
+          router.push("/login");
+        }
+      } catch (error) {
+        setError("Error, try again");
+        console.log(error);
+      }
     }
   };
 
   // Validate form data
   const validateForm = (data: typeof formData) => {
     const errors: typeof formErrors = {
-      username: "",
+      firstName: "",
+      lastName: "",
       password: "",
       confirmPassword: "",
       email: "",
       institution: "",
     };
 
-    if (!data.username) errors.username = "Username is required";
+    if (!data.firstName) errors.firstName = "First Name is required";
+    if (!data.lastName) errors.lastName = "Last Name is required";
     if (!data.password) errors.password = "Password is required";
     if (data.password !== data.confirmPassword)
       errors.confirmPassword = "Passwords do not match";
@@ -89,7 +131,8 @@ const CreateAcc = (props: Props) => {
             className="w-40 h-32 mr-2"
             src="/logo.png"
             alt="logo"
-            width={400} height={300}
+            width={400}
+            height={300}
           />
         </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -100,28 +143,13 @@ const CreateAcc = (props: Props) => {
             <form onSubmit={handleSubmit} className="max-w-md mx-auto">
               <div className="relative z-0 w-full mb-5 group">
                 <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="username"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Username
-                </label>
-              </div>
-              <div className="relative z-0 w-full mb-5 group">
-                <input
                   type="email"
                   name="email"
                   id="email"
                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   required
+                  onChange={e => handleChange(e)}
                 />
                 <label
                   htmlFor="email"
@@ -130,6 +158,7 @@ const CreateAcc = (props: Props) => {
                   Email address
                 </label>
               </div>
+
               <div className="relative z-0 w-full mb-5 group">
                 <input
                   type="password"
@@ -138,6 +167,7 @@ const CreateAcc = (props: Props) => {
                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   required
+                  onChange={e => handleChange(e)}
                 />
                 <label
                   htmlFor="password"
@@ -149,14 +179,15 @@ const CreateAcc = (props: Props) => {
               <div className="relative z-0 w-full mb-5 group">
                 <input
                   type="password"
-                  name="repeat_password"
-                  id="repeat_password"
+                  name="confirmPassword"
+                  id="confirmPassword"
                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   required
+                  onChange={e => handleChange(e)}
                 />
                 <label
-                  htmlFor="repeat_password"
+                  htmlFor="confirmPassword"
                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
                   Confirm password
@@ -166,14 +197,15 @@ const CreateAcc = (props: Props) => {
                 <div className="relative z-0 w-full mb-5 group">
                   <input
                     type="text"
-                    name="first_name"
-                    id="first_name"
+                    name="firstName"
+                    id="firstName"
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     required
+                    onChange={e => handleChange(e)}
                   />
                   <label
-                    htmlFor="first_name"
+                    htmlFor="firstName"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
                     First name
@@ -182,14 +214,15 @@ const CreateAcc = (props: Props) => {
                 <div className="relative z-0 w-full mb-5 group">
                   <input
                     type="text"
-                    name="last_name"
-                    id="last_name"
+                    name="lastName"
+                    id="lastName"
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     required
+                    onChange={e => handleChange(e)}
                   />
                   <label
-                    htmlFor="last_name"
+                    htmlFor="lastName"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
                     Last name
