@@ -1,270 +1,270 @@
-"use client";
-import React from "react";
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+// "use client";
+// import React from "react";
+// import { useState, useEffect } from "react";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import { useSession } from "next-auth/react";
 
-type Props = {};
+// type Props = {};
 
-const CreateAcc = (props: Props) => {
-  const [error, setError] = useState("");
-  const router = useRouter();
-  const { data: session, status: sessionStatus } = useSession();
+// const CreateAcc = (props: Props) => {
+//   const [error, setError] = useState("");
+//   const router = useRouter();
+//   const { data: session, status: sessionStatus } = useSession();
 
-  const institutions = [
-    { id: 1, name: "Smurfs" },
-    { id: 2, name: "Mouses" },
-    { id: 3, name: "Pandas" },
-  ];
+//   const institutions = [
+//     { id: 1, name: "Smurfs" },
+//     { id: 2, name: "Mouses" },
+//     { id: 3, name: "Pandas" },
+//   ];
 
-  // State to hold form data
-  const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-    institution: "",
-  });
+//   // State to hold form data
+//   const [formData, setFormData] = useState({
+//     email: "",
+//     firstName: "",
+//     lastName: "",
+//     password: "",
+//     confirmPassword: "",
+//     institution: "",
+//   });
 
-  // State to hold form errors
-  const [formErrors, setFormErrors] = useState({
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    institution: "",
-  });
+//   // State to hold form errors
+//   const [formErrors, setFormErrors] = useState({
+//     firstName: "",
+//     lastName: "",
+//     password: "",
+//     confirmPassword: "",
+//     email: "",
+//     institution: "",
+//   });
 
-  useEffect(() => {
-    if (sessionStatus === "authenticated") {
-      router.replace("panels/institution/");
-    }
-  }, [sessionStatus, router]);
+//   useEffect(() => {
+//     if (sessionStatus === "authenticated") {
+//       router.replace("panels/institution/");
+//     }
+//   }, [sessionStatus, router]);
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
+//   const isValidEmail = (email: string) => {
+//     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+//     return emailRegex.test(email);
+//   };
 
-  // Handle input change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+//   // Handle input change
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+//   ) => {
+//     const { name, value } = e.target;
+//     setFormData({
+//       ...formData,
+//       [name]: value,
+//     });
+//   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Validate form data
-    const errors = validateForm(formData);
-    setFormErrors(errors);
+//   // Handle form submission
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     // Validate form data
+//     const errors = validateForm(formData);
+//     setFormErrors(errors);
 
-    // Check if there are no errors
-    const isValid = Object.values(errors).every(error => error === "");
-    console.log(errors);
+//     // Check if there are no errors
+//     const isValid = Object.values(errors).every(error => error === "");
+//     console.log(errors);
 
-    if (isValid) {
-      // Submit form data
-      console.log("Form submitted successfully:", formData);
-      try {
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...formData,
-          }),
-        });
-        if (res.status === 400) {
-          setError("This email is already registered");
-        }
-        if (res.status === 200) {
-          setError("");
-          router.push("/login");
-        }
-      } catch (error) {
-        setError("Error, try again");
-        console.log(error);
-      }
-    }
-  };
+//     if (isValid) {
+//       // Submit form data
+//       console.log("Form submitted successfully:", formData);
+//       try {
+//         const res = await fetch("/api/auth/register", {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify({
+//             ...formData,
+//           }),
+//         });
+//         if (res.status === 400) {
+//           setError("This email is already registered");
+//         }
+//         if (res.status === 200) {
+//           setError("");
+//           router.push("/login");
+//         }
+//       } catch (error) {
+//         setError("Error, try again");
+//         console.log(error);
+//       }
+//     }
+//   };
 
-  // Validate form data
-  const validateForm = (data: typeof formData) => {
-    const errors: typeof formErrors = {
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-      email: "",
-      institution: "",
-    };
+//   // Validate form data
+//   const validateForm = (data: typeof formData) => {
+//     const errors: typeof formErrors = {
+//       firstName: "",
+//       lastName: "",
+//       password: "",
+//       confirmPassword: "",
+//       email: "",
+//       institution: "",
+//     };
 
-    if (!data.firstName) errors.firstName = "First Name is required";
-    if (!data.lastName) errors.lastName = "Last Name is required";
-    if (!data.password) errors.password = "Password is required";
-    if (data.password !== data.confirmPassword)
-      errors.confirmPassword = "Passwords do not match";
-    if (!data.email) errors.email = "Email is required";
-    if (!data.institution) errors.institution = "Institution is required";
+//     if (!data.firstName) errors.firstName = "First Name is required";
+//     if (!data.lastName) errors.lastName = "Last Name is required";
+//     if (!data.password) errors.password = "Password is required";
+//     if (data.password !== data.confirmPassword)
+//       errors.confirmPassword = "Passwords do not match";
+//     if (!data.email) errors.email = "Email is required";
+//     if (!data.institution) errors.institution = "Institution is required";
 
-    return errors;
-  };
+//     return errors;
+//   };
 
-  return (
-    <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <Image
-            className="w-40 h-32 mr-2"
-            src="/logo.png"
-            alt="logo"
-            width={400}
-            height={300}
-          />
-        </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Sign in to your account
-            </h1>
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-              <div className="relative z-0 w-full mb-5 group">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                  onChange={e => handleChange(e)}
-                />
-                <label
-                  htmlFor="email"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Email address
-                </label>
-              </div>
+//   return (
+//     <section className="bg-gray-50 dark:bg-gray-900">
+//       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+//         <a
+//           href="#"
+//           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+//         >
+//           <Image
+//             className="w-40 h-32 mr-2"
+//             src="/logo.png"
+//             alt="logo"
+//             width={400}
+//             height={300}
+//           />
+//         </a>
+//         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+//           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+//             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+//               Sign in to your account
+//             </h1>
+//             <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+//               <div className="relative z-0 w-full mb-5 group">
+//                 <input
+//                   type="email"
+//                   name="email"
+//                   id="email"
+//                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+//                   placeholder=" "
+//                   required
+//                   onChange={e => handleChange(e)}
+//                 />
+//                 <label
+//                   htmlFor="email"
+//                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+//                 >
+//                   Email address
+//                 </label>
+//               </div>
 
-              <div className="relative z-0 w-full mb-5 group">
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                  onChange={e => handleChange(e)}
-                />
-                <label
-                  htmlFor="password"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="relative z-0 w-full mb-5 group">
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                  onChange={e => handleChange(e)}
-                />
-                <label
-                  htmlFor="confirmPassword"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Confirm password
-                </label>
-              </div>
-              <div className="grid md:grid-cols-2 md:gap-6">
-                <div className="relative z-0 w-full mb-5 group">
-                  <input
-                    type="text"
-                    name="firstName"
-                    id="firstName"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
-                    required
-                    onChange={e => handleChange(e)}
-                  />
-                  <label
-                    htmlFor="firstName"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >
-                    First name
-                  </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                  <input
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
-                    required
-                    onChange={e => handleChange(e)}
-                  />
-                  <label
-                    htmlFor="lastName"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >
-                    Last name
-                  </label>
-                </div>
-              </div>
-              <div className="grid w-full md:gap-6">
-                <div className="relative z-0 w-full mb-5 group">
-                  <select
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    id="institution"
-                    name="institution"
-                    value={formData.institution}
-                    onChange={e =>
-                      handleChange(e as React.ChangeEvent<HTMLSelectElement>)
-                    }
-                  >
-                    <option value="">Select an institution</option>
-                    {institutions.map(institution => (
-                      <option key={institution.id} value={institution.name}>
-                        {institution.name}
-                      </option>
-                    ))}
-                  </select>
+//               <div className="relative z-0 w-full mb-5 group">
+//                 <input
+//                   type="password"
+//                   name="password"
+//                   id="password"
+//                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+//                   placeholder=" "
+//                   required
+//                   onChange={e => handleChange(e)}
+//                 />
+//                 <label
+//                   htmlFor="password"
+//                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+//                 >
+//                   Password
+//                 </label>
+//               </div>
+//               <div className="relative z-0 w-full mb-5 group">
+//                 <input
+//                   type="password"
+//                   name="confirmPassword"
+//                   id="confirmPassword"
+//                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+//                   placeholder=" "
+//                   required
+//                   onChange={e => handleChange(e)}
+//                 />
+//                 <label
+//                   htmlFor="confirmPassword"
+//                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+//                 >
+//                   Confirm password
+//                 </label>
+//               </div>
+//               <div className="grid md:grid-cols-2 md:gap-6">
+//                 <div className="relative z-0 w-full mb-5 group">
+//                   <input
+//                     type="text"
+//                     name="firstName"
+//                     id="firstName"
+//                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+//                     placeholder=" "
+//                     required
+//                     onChange={e => handleChange(e)}
+//                   />
+//                   <label
+//                     htmlFor="firstName"
+//                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+//                   >
+//                     First name
+//                   </label>
+//                 </div>
+//                 <div className="relative z-0 w-full mb-5 group">
+//                   <input
+//                     type="text"
+//                     name="lastName"
+//                     id="lastName"
+//                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+//                     placeholder=" "
+//                     required
+//                     onChange={e => handleChange(e)}
+//                   />
+//                   <label
+//                     htmlFor="lastName"
+//                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+//                   >
+//                     Last name
+//                   </label>
+//                 </div>
+//               </div>
+//               <div className="grid w-full md:gap-6">
+//                 <div className="relative z-0 w-full mb-5 group">
+//                   <select
+//                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//                     id="institution"
+//                     name="institution"
+//                     value={formData.institution}
+//                     onChange={e =>
+//                       handleChange(e as React.ChangeEvent<HTMLSelectElement>)
+//                     }
+//                   >
+//                     <option value="">Select an institution</option>
+//                     {institutions.map(institution => (
+//                       <option key={institution.id} value={institution.name}>
+//                         {institution.name}
+//                       </option>
+//                     ))}
+//                   </select>
 
-                  {formErrors.institution && (
-                    <p style={{ color: "red" }}>{formErrors.institution}</p>
-                  )}
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Submit
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+//                   {formErrors.institution && (
+//                     <p style={{ color: "red" }}>{formErrors.institution}</p>
+//                   )}
+//                 </div>
+//               </div>
+//               <button
+//                 type="submit"
+//                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+//               >
+//                 Submit
+//               </button>
+//             </form>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
 
-export default CreateAcc;
+// export default CreateAcc;

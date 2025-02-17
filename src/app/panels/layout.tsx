@@ -67,7 +67,7 @@ const PanelLayout = ({ children }: any) => {
         setLoading(true);
         if (!userId) return;
 
-        const response = await fetch(`/api/operative/users/${userId}`);
+        const response = await fetch(`/api/users?id=${userId}`);
 
         if (!response.ok) {
           throw new Error("User not found or server error");

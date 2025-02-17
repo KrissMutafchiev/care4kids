@@ -46,7 +46,7 @@ const TeachersManagement = () => {
       try {
         // Fetch institutions
         const institutionResponse = await fetch(
-          "/api/operative/institution/get-institution"
+          "/api/institution/get-institution"
         );
         if (!institutionResponse.ok)
           throw new Error("Failed to fetch institutions");
@@ -59,7 +59,7 @@ const TeachersManagement = () => {
 
         // Fetch group classes
         const groupResponse = await fetch(
-          "/api/operative/group-class/get-group-class"
+          "/api/group-class/get-group-class"
         );
         if (!groupResponse.ok) throw new Error("Failed to fetch group classes");
         const groupData = await groupResponse.json();
@@ -83,7 +83,7 @@ const TeachersManagement = () => {
     setIsLoading(true);
     try {
       const teacherResponse = await fetch(
-        `/api/operative/users/get-users/institution?institutionId=${selectedInstitution}`
+        `/api//users?institution=${selectedInstitution}`
       );
       if (!teacherResponse.ok) throw new Error("Failed to fetch teachers");
       const teacherData = await teacherResponse.json();
@@ -144,8 +144,8 @@ const TeachersManagement = () => {
     }
 
     const endpoint = selectedTeacher
-      ? `/api/operative/users/update-user/${selectedTeacher._id}`
-      : "/api/operative/users/create-user";
+      ? `/api/users${selectedTeacher._id}`
+      : "/api/users";
     const method = selectedTeacher ? "PUT" : "POST";
 
     try {
@@ -180,7 +180,7 @@ const TeachersManagement = () => {
     if (!confirm("Are you sure you want to delete this teacher?")) return;
 
     try {
-      const response = await fetch(`/api/operative/users/delete-user/${id}`, {
+      const response = await fetch(`/api/users/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete teacher");
