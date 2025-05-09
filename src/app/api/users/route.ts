@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/User";
-import connect from "@/utils/db";
-import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+
+import User from "@/models/User";
 import Institution from "@/models/Institution"; 
 import GroupClass from "@/models/GroupClass"; 
+import connect from "@/utils/db";
+import bcrypt from "bcryptjs";
+
 
 // ✅ GET USERS (Fetch all users with optional filtering)
 export async function GET(request: NextRequest) {
@@ -14,7 +16,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const role = searchParams.get("role");
-    const institution = searchParams.get("institution");
+    const institution = searchParams.get("institutions");
+    const groupClass = searchParams.get("groupClasses");
 
       const filter: any = {};
       
@@ -29,10 +32,11 @@ export async function GET(request: NextRequest) {
       
     if (role) filter.role = role;
     if (institution) filter.institution = institution;
+    if (groupClass) filter.groupClass = groupClass;
 
     const users = await User.find(filter)
-      .populate("institution", "name") // Populate institution name
-      .populate("groupClass", "name") // Populate group class name
+      .populate({ path: "institution", model: Institution, select: "name" }) // Ensure correct model usage
+      .populate({ path: "groupClass", model: GroupClass, select: "name" }) // Ensure correct model usage
       .lean();
 
     return NextResponse.json(users, { status: 200 });

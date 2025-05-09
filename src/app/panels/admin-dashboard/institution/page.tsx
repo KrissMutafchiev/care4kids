@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { InstitutionManagement } from "@/app/_components/institution-management.component";
+import  InstitutionManagement  from "@/app/_components/institution-management.component";
 
 type Props = {};
 

@@ -12,7 +12,7 @@ const kidSchema = new Schema(
       type: String,
       required: true,
     },
-    midddleName: {
+    middleName: {
       type: String,
       required: true,
     },
@@ -26,14 +26,12 @@ const kidSchema = new Schema(
     },
     group: {
       type: Schema.Types.ObjectId, // Reference to the Group collection
-      ref: "Group",
-      required: true,
+      ref: "GroupClass",
     },
     teachers: [
       {
         type: Schema.Types.ObjectId, // Array of references to User (parent(s))
         ref: "User",
-        required: true,
       },
     ],
     institution: {
@@ -45,7 +43,6 @@ const kidSchema = new Schema(
       {
         type: Schema.Types.ObjectId, // Array of references to User (parent(s))
         ref: "User",
-        required: true,
       },
     ],
   },

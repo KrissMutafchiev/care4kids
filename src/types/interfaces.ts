@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
-export interface User {
+export interface IUser {
+  _id: string; // Optional, only present when fetched from the database
   firstName: string | null | undefined;
   middleName: string | null | undefined;
   lastName: string | null | undefined;
@@ -9,31 +10,18 @@ export interface User {
   position: any;
   roles: Array<Object>;
   jwtToken: string;
-  institutions:Array<number>
-}
-
-
-export interface TeacherModel {
-  _id: Types.ObjectId | string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: "teacher"; // Specific to the teacher role
-  institution: {
-    _id: Types.ObjectId | string;
-    name: string;
-  }; // Populated field for the institution the teacher belongs to
-  groupClass?: {
-    _id: Types.ObjectId | string;
-    name: string;
-  }; // Optional field for the group class
-  isActive: boolean; // Indicates if the teacher account is active
+  institution: IInstitution;
+  groupClasses?: IGroupClass[]; 
+  children?: IKid[];              // For parents
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean; 
+
 }
 
 
-export interface InstitutionModel {
+
+export interface IInstitution {
   _id?: string; // Optional, only present when fetched from the database
   name: string;
   address: string;
@@ -45,10 +33,25 @@ export interface InstitutionModel {
 }
 
 
-export interface GroupClassModel  {
+export interface IGroupClass  {
   _id: string;
   name: string;
-  institution: InstitutionModel;
+  institution: IInstitution;
   kids: string[];
   teacher: string[];
 };
+
+export interface IKid {
+  _id?: string; // Optional for when creating a new kid
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  gender: string; // You can expand gender options if needed  "Male" | "Female" | "Other";
+  age: number  | undefined;
+  groupClass?: string; // GroupClass ID (optional)
+  teachers: string[]; // Array of User IDs (ObjectId references)
+  institution: string; // Institution ID (required)
+  parents: string[]; // Array of User IDs (ObjectId references)
+  createdAt?: Date; // Optional, managed by Mongoose timestamps
+  updatedAt?: Date; // Optional, managed by Mongoose timestamps
+}

@@ -13,22 +13,25 @@ import {
 import { Trash2, Edit } from "lucide-react";
 import { useAlert } from "@/app/context/AlertContext";
 import {
-  TeacherModel,
-  InstitutionModel,
-  GroupClassModel,
+  IUser,
+  IInstitution,
+  IGroupClass,
 } from "@/types/interfaces";
 import { USER_ROLE } from "@/utils/user-role.consts";
+import { deleteUser, fetchUsers ,createUser, updateUser} from "@/services/user-service";
+import { fetchInstitutions } from "@/services/institution-service";
+import { fetchGroupClasses } from "@/services/group-class-service";
 
 const TeachersManagement = () => {
   const { showAlert } = useAlert();
 
-  const [teachers, setTeachers] = useState<TeacherModel[]>([]);
-  const [institutions, setInstitutions] = useState<InstitutionModel[]>([]);
-  const [groupClasses, setGroupClasses] = useState<GroupClassModel[]>([]);
+  const [teachers, setTeachers] = useState<IUser[]>([]);
+  const [institutions, setInstitutions] = useState<IInstitution[]>([]);
+  const [groupClasses, setGroupClasses] = useState<IGroupClass[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedTeacher, setSelectedTeacher] = useState<TeacherModel | null>(
+  const [selectedTeacher, setSelectedTeacher] = useState<IUser | null>(
     null
   );
 
@@ -45,25 +48,16 @@ const TeachersManagement = () => {
       setIsLoading(true);
       try {
         // Fetch institutions
-        const institutionResponse = await fetch(
-          "/api/institution/get-institution"
-        );
-        if (!institutionResponse.ok)
-          throw new Error("Failed to fetch institutions");
-        const institutionData = await institutionResponse.json();
-        setInstitutions(institutionData);
+        const institutions = await fetchInstitutions()
+        setInstitutions(institutions);
 
-        if (institutionData.length > 0) {
-          setSelectedInstitution(institutionData[0]._id);
+        if (institutions.length > 0 && institutions[0]._id) {
+          setSelectedInstitution(institutions[0]._id);
         }
 
         // Fetch group classes
-        const groupResponse = await fetch(
-          "/api/group-class/get-group-class"
-        );
-        if (!groupResponse.ok) throw new Error("Failed to fetch group classes");
-        const groupData = await groupResponse.json();
-        setGroupClasses(groupData);
+        const groupClasses = await fetchGroupClasses();
+        setGroupClasses(groupClasses);
       } catch (error: any) {
         showAlert(error.message || "Failed to fetch data", "error");
       } finally {
@@ -82,12 +76,8 @@ const TeachersManagement = () => {
   const fetchTeachers = async () => {
     setIsLoading(true);
     try {
-      const teacherResponse = await fetch(
-        `/api//users?institution=${selectedInstitution}`
-      );
-      if (!teacherResponse.ok) throw new Error("Failed to fetch teachers");
-      const teacherData = await teacherResponse.json();
-      setTeachers(teacherData);
+      const teachersData = await fetchUsers({ institutions: selectedInstitution, role: USER_ROLE.TEACHER });
+      setTeachers(teachersData);
     } catch (error: any) {
       showAlert(error.message || "Failed to fetch teachers", "error");
     } finally {
@@ -95,7 +85,7 @@ const TeachersManagement = () => {
     }
   };
 
-  const openModal = (teacher: TeacherModel | null = null) => {
+  const openModal = (teacher: IUser | null = null) => {
     setSelectedTeacher(teacher);
     setFormData(
       teacher
@@ -103,8 +93,8 @@ const TeachersManagement = () => {
             firstName: teacher.firstName,
             lastName: teacher.lastName,
             email: teacher.email,
-            institution: teacher.institution._id || "",
-            groupClass: teacher.groupClass?._id || "",
+            institution: teacher.institution?._id || "",
+            groupClass: teacher.groupClasses?.[0]?._id || "",
             role: USER_ROLE.TEACHER,
           }
         : {
@@ -142,49 +132,38 @@ const TeachersManagement = () => {
       showAlert("All fields except GroupClass are required", "error");
       return;
     }
-
-    const endpoint = selectedTeacher
-      ? `/api/users${selectedTeacher._id}`
-      : "/api/users";
-    const method = selectedTeacher ? "PUT" : "POST";
-
+  
     try {
-      const response = await fetch(endpoint, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) throw new Error("Failed to save user");
-
-      const result = await response.json();
-
-      if (!result.teachers) throw new Error("Invalid response from server");
-
-      setTeachers(result.teachers);
-
+      let result;
+  
+      if (selectedTeacher) {
+        result = await updateUser(selectedTeacher._id, formData);
+      } else {
+        result = await createUser(formData);
+      }
+  
+      if (!result) throw new Error("Invalid response from server");
+  
+      await fetchTeachers();
+  
       showAlert(
         selectedTeacher
           ? "User updated successfully!"
-          : `User created successfully! Temporary password: ${result.tempPassword}`,
-        "success"
+          : `User created successfully!`,'success'
       );
-
+  
       closeModal();
     } catch (error: any) {
       showAlert(error.message || "Failed to save user", "error");
     }
   };
+  
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this teacher?")) return;
 
     try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error("Failed to delete teacher");
-
+      await deleteUser(id)
       setTeachers((prev) => prev.filter((t) => t._id !== id));
       showAlert("Teacher deleted successfully!", "success");
     } catch (error: any) {
@@ -200,7 +179,6 @@ const TeachersManagement = () => {
       </div>
     );
   }
-
 
   return (
     <div className="flex flex-col space-y-6 p-6">
@@ -238,13 +216,13 @@ const TeachersManagement = () => {
         </Table.Head>
         <Table.Body>
           {teachers.map(teacher => (
-            <Table.Row key={teacher._id.toString()}>
+            <Table.Row key={teacher._id?.toString()}>
               <Table.Cell>
                 {teacher.firstName} {teacher.lastName}
               </Table.Cell>
               <Table.Cell>{teacher.email}</Table.Cell>
-              <Table.Cell>{teacher.institution.name}</Table.Cell>
-              <Table.Cell>{teacher.groupClass?.name || "N/A"}</Table.Cell>
+              <Table.Cell>{teacher.institution?.name || "N/A"}</Table.Cell>
+              <Table.Cell>{teacher.groupClasses?.[0]?.name || "N/A"}</Table.Cell>
               <Table.Cell>
                 <div className="flex space-x-4">
                   <Button
@@ -257,7 +235,7 @@ const TeachersManagement = () => {
                   <Button
                     size="sm"
                     color="failure"
-                    onClick={() => handleDelete(teacher._id.toString())}
+                    onClick={() => teacher._id && handleDelete(teacher._id.toString())}
                   >
                     <Trash2 size={16} />
                   </Button>

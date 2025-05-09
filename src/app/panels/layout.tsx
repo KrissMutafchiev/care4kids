@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import UserNav from "@/app/_components/user-nav.component";
 import { LayoutDashboard, Users, School, Baby, BookA } from "lucide-react";
+import { fetchUsers } from "@/services/user-service"; 
 
 const icons = {
   dashboard: LayoutDashboard,
@@ -67,16 +68,11 @@ const PanelLayout = ({ children }: any) => {
         setLoading(true);
         if (!userId) return;
 
-        const response = await fetch(`/api/users?id=${userId}`);
-
-        if (!response.ok) {
-          throw new Error("User not found or server error");
-        }
-
-        const userData = await response.json();
+        // Use the getUserById service to fetch user data
+        const userData = await fetchUsers({id: userId});
         setUser(userData);
       } catch (err: any) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch user data.");
       } finally {
         setLoading(false);
       }
@@ -94,7 +90,7 @@ const PanelLayout = ({ children }: any) => {
   }
 
   // Determine user role and navigation links
-  const userRole = user?.role || "Guest"; // Default to "Guest" if no role
+  const userRole = user[0]?.role || "Guest"; // Default to "Guest" if no role
   const navigationLinks = roleBasedNav[userRole] || [];
 
   return (

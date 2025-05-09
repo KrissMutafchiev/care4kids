@@ -19,12 +19,7 @@ const groupSchema = new Schema(
         ref: "Kid",
       },
     ],
-    teacher: [
-      {
-        type: Schema.Types.ObjectId, // Array of User for the group teacher
-        ref: "User",
-      },
-    ],
+    teacher: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Label, TextInput, Button, Alert } from "flowbite-react";
+import { createInstitution } from "@/services/institution-service";
 
 export const InstitutionCreation: React.FC = () => {
   const [institutionName, setInstitutionName] = useState("");
@@ -23,21 +24,13 @@ export const InstitutionCreation: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/operative/institution/create-institution", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: institutionName,
-          address,
-          email: institutionEmail,
-          uic,
-          contactPerson,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create institution. Please try again.");
-      }
+      await createInstitution({
+        name: institutionName,
+        address,
+        email: institutionEmail,
+        uic,
+        contactPerson,
+      })
 
       setSuccessMessage("Institution created successfully!");
       setInstitutionName("");
