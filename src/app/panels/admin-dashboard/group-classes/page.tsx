@@ -7,7 +7,7 @@ import ListInstitutions from "@/app/_components/managment/institution/institutio
 import GroupClassCards from "@/app/_components/managment/group-class/group-class-cards.component";
 import GroupClassForm from "@/app/_components/managment/group-class/group-class-form.component";
 import { fetchInstitutions } from "@/services/institution-service";
-import { useAlert } from "@/app/context/AlertContext";
+import { useAlert } from "@/components/providers/AlertProvider";
 import {
   fetchGroupClasses,
   deleteGroupClass,
@@ -106,24 +106,35 @@ const GroupClass = () => {
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Header with title and add button */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Group Classes Management
-        </h1>
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="p-3 bg-gradient-to-br from-rose-100 to-pink-50 rounded-lg">
+          <BookA className="h-6 w-6 text-rose-600" />
+        </div>
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-600">
+            Group Classes Management
+          </h1>
+          <p className="text-gray-600 text-sm mt-1">
+            Organize and manage class groups across institutions
+          </p>
+        </div>
         <Button
-          color="primary"
+          color="failure"
           onClick={handleAdd}
           disabled={!selectedInstitution}
+          className="px-4 py-2"
         >
-          Add Group Class
+          <BookA size={16} className="mr-2" /> Add Group Class
         </Button>
       </div>
 
       {/* Main content area */}
-      <div className="flex flex-grow gap-4">
+      <div className="flex flex-grow gap-6">
         {/* Left Side: Institution List */}
-        <Card className="w-1/3 overflow-auto">
-          <h2 className="text-lg font-semibold mb-4">Select Institution</h2>
+        <Card className="w-1/3 overflow-auto border-0 shadow-lg">
+          <h2 className="text-lg font-semibold mb-4 text-indigo-700 flex items-center">
+            <School size={18} className="mr-2" /> Select Institution
+          </h2>
           <ListInstitutions
             institutions={institutions}
             onSelect={handleSelectInstitution}
@@ -132,7 +143,7 @@ const GroupClass = () => {
         </Card>
 
         {/* Right Side: Group Class Cards */}
-        <Card className="w-2/3 overflow-auto">
+        <Card className="w-2/3 overflow-auto border-0 shadow-lg">
           {selectedInstitution ? (
             loading ? (
               <div className="flex justify-center items-center h-64">
