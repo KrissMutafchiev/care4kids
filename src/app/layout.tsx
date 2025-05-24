@@ -3,11 +3,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+
 const inter = Inter({ subsets: ["latin"] });
 
 import { getServerSession } from "next-auth";
-import SessionProvider from "@/utils/SessionProvider";
-import { AlertProvider } from "./context/AlertContext";
+import { authOptions } from "@/lib/auth";
+import SessionProvider from "@/components/providers/SessionProvider";
+import { AlertProvider } from "@/components/providers/AlertProvider";
+import { TempoInit } from "./tempo-init";
 
 export const metadata: Metadata = {
   title: "Care4Kids",
@@ -19,14 +23,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
-              
       <SessionProvider session={session}>
         <body className={inter.className}>
+          <Script src="https://api.tempo.new/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js" />
           <AlertProvider>{children}</AlertProvider>
+          <TempoInit />
         </body>
       </SessionProvider>
     </html>

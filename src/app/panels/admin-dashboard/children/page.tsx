@@ -3,12 +3,11 @@
 import React from "react";
 import KidManagement from "@/app/_components/kid-managment.component";
 
-type Props = {};
-
-const Children = (props: Props) => {
+const Children = () => {
   return (
-    <div className="flex flex-col space-y-4 p-6">
-      <KidManagement/> 
+    <div className="flex flex-col space-y-4">
+      <h1 className="text-2xl font-bold text-gray-800">Children Management</h1>
+      <KidManagement />
     </div>
   );
 };

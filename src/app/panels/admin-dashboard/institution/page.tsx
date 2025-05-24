@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
+import InstitutionManagement from "@/app/_components/institution-management.component";
 
-import  InstitutionManagement  from "@/app/_components/institution-management.component";
-
-type Props = {};
-
-const Institution = (props: Props) => {
+const Institution = () => {
   return (
-    <div className="flex flex-col space-y-4 p-6">
-      <InstitutionManagement/>
+    <div className="flex flex-col space-y-4">
+      <h1 className="text-2xl font-bold text-gray-800">
+        Institution Management
+      </h1>
+      <InstitutionManagement />
     </div>
   );
 };
