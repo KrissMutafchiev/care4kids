@@ -4,11 +4,11 @@ import React, {useState ,useEffect } from "react";
 import { Button, Label, Modal, TextInput ,FileInput} from "flowbite-react";
 import {customThemeButton, customThemeModal} from "@/app/_components/custom-flowbite-theme"
 import { HiUserAdd } from "react-icons/hi";
-import { Teacher } from "../../types/interfaces";
+import { IUser } from "../../types/interfaces";
 
 interface ModalProps {
   openModal: boolean;
-  teacher: Teacher | undefined;
+  teacher: IUser | undefined;
   closeModal: () => void;
 }
 

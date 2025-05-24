@@ -2,23 +2,22 @@
 import { useState, useEffect } from "react";
 import { Button, Spinner, Card } from "flowbite-react";
 import Modal from "@/app/_components/ui/modal.component";
-import HeaderToolbar from "@/app/_components/managment/group-class/group-class-toolbar.component";
 import ListInstitutions from "@/app/_components/managment/institution/institution-list.component";
 import GroupClassCards from "@/app/_components/managment/group-class/group-class-cards.component";
 import GroupClassForm from "@/app/_components/managment/group-class/group-class-form.component";
+import { School,BookA } from "lucide-react";
 import { fetchInstitutions } from "@/services/institution-service";
 import { useAlert } from "@/components/providers/AlertProvider";
 import {
   fetchGroupClasses,
   deleteGroupClass,
 } from "@/services/group-class-service";
+import { IInstitution } from "@/types/interfaces";
 
 const GroupClass = () => {
   const { showAlert } = useAlert();
   const [institutions, setInstitutions] = useState<any[]>([]);
-  const [selectedInstitution, setSelectedInstitution] = useState<{
-    _id: string;
-  } | null>(null);
+  const [selectedInstitution, setSelectedInstitution] = useState< IInstitution | null>(null);
   const [groupClasses, setGroupClasses] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingGroupClass, setEditingGroupClass] = useState(null);
@@ -55,7 +54,7 @@ const GroupClass = () => {
       setLoading(true);
       try {
         const data = await fetchGroupClasses({
-          institution: selectedInstitution._id,
+          institution: selectedInstitution._id ?? "",
         });
         setGroupClasses(data);
       } catch (err: any) {
