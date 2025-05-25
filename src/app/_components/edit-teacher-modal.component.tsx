@@ -1,196 +1,410 @@
 "use client";
 
-import React, {useState ,useEffect } from "react";
-import { Button, Label, Modal, TextInput ,FileInput} from "flowbite-react";
-import {customThemeButton, customThemeModal} from "@/app/_components/custom-flowbite-theme"
-import { HiUserAdd } from "react-icons/hi";
-import { Teacher } from "../../types/interfaces";
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Label,
+  Modal,
+  TextInput,
+  FileInput,
+  Select,
+  Spinner,
+} from "flowbite-react";
+import {
+  customThemeButton,
+  customThemeModal,
+} from "@/app/_components/custom-flowbite-theme";
+import { UserPlus, Save } from "lucide-react";
+import { IUser, IGroupClass } from "../../types/interfaces";
+import { fetchGroupClasses } from "@/services/group-class-service";
+import { fetchInstitutions } from "@/services/institution-service";
+import { createUser, updateUser } from "@/services/user-service";
+import { useAlert } from "@/app/context/AlertContext";
+import { USER_ROLE } from "@/utils/user-role.consts";
 
 interface ModalProps {
   openModal: boolean;
-  teacher: Teacher | undefined;
+  teacher: IUser | null;
   closeModal: () => void;
+  onSuccess?: () => void;
 }
 
-export const EditTeacherModalComponent: React.FC<ModalProps> = ({ openModal, closeModal ,teacher }:any) => {
-  const [firstName, setFirstName] = useState('');
-  const [midName, setMidName] = useState('');
-  const [lastName, setLastName] =  useState('');
-  const [role, setRole] = useState('');
-  const [classes, setClasses] =  useState('');
-  const [email, setEmail] =  useState('');
-  const [phone, setPhone] =  useState('');
-  const [avatar, setAvatar] =  useState('');
+export const EditTeacherModalComponent: React.FC<ModalProps> = ({
+  openModal,
+  closeModal,
+  teacher,
+  onSuccess,
+}) => {
+  const { showAlert } = useAlert();
+  const [isLoading, setIsLoading] = useState(false);
+  const [institutions, setInstitutions] = useState<any[]>([]);
+  const [groupClasses, setGroupClasses] = useState<IGroupClass[]>([]);
 
-
-  const [teacherData, setTeacherData] = useState({});
-
-  // To Do : add functionality to load the selected teacher data into inputs fields .
+  const [formData, setFormData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    role: USER_ROLE.TEACHER,
+    groupClass: "",
+    email: "",
+    phoneNumber: "",
+    institution: "",
+    avatarImg: "",
+    isActive: true,
+  });
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const institutionsData = await fetchInstitutions();
+        setInstitutions(institutionsData);
 
-    if(teacher){
-      setFirstName(teacher.firstName);
-      setMidName(teacher.middleName);
-      setLastName(teacher.lastName);
-      setRole(teacher.role);
-      setClasses(teacher.classes);
-      setEmail(teacher.email);
-      setPhone(teacher.phoneNumber);
-      setAvatar(teacher.avatarImg);
-    }
+        if (teacher?.institution) {
+          const institutionId =
+            typeof teacher.institution === "string"
+              ? teacher.institution
+              : teacher.institution._id;
 
-  }, [openModal,closeModal , teacher]); // someProp is the dependency
-
-
-  const handleSubmit = (e:any) => {
-    e.preventDefault();
-
-    // Collect all data from inputs into a single object
-    const collectedData = {
-      firstName,
-      midName,
-      lastName,
-      role,
-      classes,
-      email,
-      phone,
-      avatar
+          if (institutionId) {
+            const classesData = await fetchGroupClasses(institutionId);
+            setGroupClasses(classesData);
+          }
+        }
+      } catch (error: any) {
+        showAlert(error.message || "Failed to load data", "error");
+      }
     };
 
-    // Set the teacherData state to this object
-    setTeacherData(collectedData);
+    if (openModal) {
+      loadData();
+    }
+  }, [openModal]);
 
-    // You can clear the form inputs if needed
-    // setFirstName('');
-    // setMidName('');
-    // setLastName('');
-    // setRole('');
-    // setClasses('');
-    // setEmail('');
-    // setPhone('');
-    // setAvatar('');
+  useEffect(() => {
+    if (teacher) {
+      const institutionId =
+        typeof teacher.institution === "string"
+          ? teacher.institution
+          : teacher.institution?._id || "";
 
-    console.log('Collected Data: ', collectedData); // You can remove this once it works
+      const groupClassId =
+        teacher.groupClasses && teacher.groupClasses.length > 0
+          ? typeof teacher.groupClasses[0] === "string"
+            ? teacher.groupClasses[0]
+            : teacher.groupClasses[0]?._id || ""
+          : "";
+
+      setFormData({
+        firstName: teacher.firstName || "",
+        middleName: teacher.middleName || "",
+        lastName: teacher.lastName || "",
+        role: teacher.role || USER_ROLE.TEACHER,
+        groupClass: groupClassId,
+        email: teacher.email || "",
+        phoneNumber: teacher.phoneNumber || "",
+        institution: institutionId,
+        avatarImg: teacher.avatarImg || "",
+        isActive: teacher.isActive !== undefined ? teacher.isActive : true,
+      });
+    } else {
+      // Reset form for new teacher
+      setFormData({
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        role: USER_ROLE.TEACHER,
+        groupClass: "",
+        email: "",
+        phoneNumber: "",
+        institution: institutions.length > 0 ? institutions[0]._id : "",
+        avatarImg: "",
+        isActive: true,
+      });
+    }
+  }, [teacher, institutions]);
+
+  const handleInstitutionChange = async (institutionId: string) => {
+    setFormData({ ...formData, institution: institutionId, groupClass: "" });
+
+    if (institutionId) {
+      try {
+        const classesData = await fetchGroupClasses(institutionId);
+        setGroupClasses(classesData);
+      } catch (error: any) {
+        showAlert(error.message || "Failed to load classes", "error");
+      }
+    } else {
+      setGroupClasses([]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.institution
+    ) {
+      showAlert("Please fill in all required fields", "error");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const teacherData = {
+        ...formData,
+        groupClasses: formData.groupClass ? [formData.groupClass] : [],
+      };
+
+      if (teacher?._id) {
+        // Update existing teacher
+        await updateUser(teacher._id, teacherData);
+        showAlert("Teacher updated successfully", "success");
+      } else {
+        // Create new teacher
+        await createUser(teacherData);
+        showAlert("Teacher created successfully", "success");
+      }
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      closeModal();
+    } catch (error: any) {
+      showAlert(error.message || "Failed to save teacher", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div>
-      {
-        openModal && (
-          <Modal show={openModal}  onClose={closeModal}  theme={customThemeModal} size="3xl"  popup>
-            <Modal.Header />
-            <Modal.Body>
-              <form onSubmit={handleSubmit} className="">
+      {openModal && (
+        <Modal
+          show={openModal}
+          onClose={closeModal}
+          theme={customThemeModal}
+          size="3xl"
+          popup
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-6">
-                <h3 className="text-xl font-medium text-gray-900 dark:text-white">Edit Teacher</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center">
+                  <UserPlus className="h-6 w-6 text-blue-600 mr-2" />
+                  <h3 className="text-xl font-medium text-gray-900">
+                    {teacher ? "Edit Teacher" : "Add New Teacher"}
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* First Name */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="firstName" value="First Name" />
+                      <Label htmlFor="firstName" value="First Name *" />
                     </div>
                     <TextInput
                       id="firstName"
                       placeholder="First Name"
-                      value={firstName}
-                      onChange={(event) => setFirstName(event.target.value)}
+                      value={formData.firstName}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          firstName: event.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
+
+                  {/* Middle Name */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="midName" value="Mid Name" />
+                      <Label htmlFor="middleName" value="Middle Name" />
                     </div>
                     <TextInput
-                      id="midName"
-                      placeholder="Mid Name"
-                      value={midName}
-                      onChange={(event) => setMidName(event.target.value)}
-                      required
+                      id="middleName"
+                      placeholder="Middle Name"
+                      value={formData.middleName}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          middleName: event.target.value,
+                        })
+                      }
                     />
                   </div>
+
+                  {/* Last Name */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="lastName" value="Last Name" />
+                      <Label htmlFor="lastName" value="Last Name *" />
                     </div>
                     <TextInput
                       id="lastName"
                       placeholder="Last Name"
-                      value={lastName}
-                      onChange={(event) => setLastName(event.target.value)}
+                      value={formData.lastName}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          lastName: event.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
 
+                  {/* Email */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="role" value="Role" />
-                    </div>
-                    <TextInput
-                      id="role"
-                      placeholder="Role"
-                      value={role}
-                      onChange={(event) => setRole(event.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <div className="mb-2 block">
-                      <Label htmlFor="classes" value="Classes" />
-                    </div>
-                    <TextInput
-                      id="classes"
-                      placeholder="Classes"
-                      value={classes}
-                      onChange={(event) => setClasses(event.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <div className="mb-2 block">
-                      <Label htmlFor="email" value="Email" />
+                      <Label htmlFor="email" value="Email *" />
                     </div>
                     <TextInput
                       id="email"
+                      type="email"
                       placeholder="Email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      value={formData.email}
+                      onChange={(event) =>
+                        setFormData({ ...formData, email: event.target.value })
+                      }
                       required
                     />
                   </div>
+
+                  {/* Phone */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="phone" value="Phone" />
+                      <Label htmlFor="phoneNumber" value="Phone" />
                     </div>
                     <TextInput
-                      id="phone"
-                      placeholder="Phone"
-                      value={phone}
-                      onChange={(event) => setPhone(event.target.value)}
-                      required
+                      id="phoneNumber"
+                      placeholder="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          phoneNumber: event.target.value,
+                        })
+                      }
                     />
                   </div>
+
+                  {/* Institution */}
                   <div>
                     <div className="mb-2 block">
-                      <Label htmlFor="avatar" value="Avatar" />
+                      <Label htmlFor="institution" value="Institution *" />
                     </div>
-                    <FileInput id="avatar" placeholder="Avatar"  onChange={(event) => setAvatar(event.target.value)} />
+                    <Select
+                      id="institution"
+                      value={formData.institution}
+                      onChange={(event) =>
+                        handleInstitutionChange(event.target.value)
+                      }
+                      required
+                    >
+                      <option value="">Select Institution</option>
+                      {institutions.map((inst) => (
+                        <option key={inst._id} value={inst._id}>
+                          {inst.name}
+                        </option>
+                      ))}
+                    </Select>
                   </div>
-                  <div className="flex items-center">
-                    <Button type="submit" theme={customThemeButton}  size="md" >
-                      <HiUserAdd className=" mr-2 h-5 w-5" />
-                      Submit
-                    </Button>
+
+                  {/* Group Class */}
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="groupClass" value="Class (Optional)" />
+                    </div>
+                    <Select
+                      id="groupClass"
+                      value={formData.groupClass}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          groupClass: event.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Select Class</option>
+                      {groupClasses.map((cls) => (
+                        <option key={cls._id} value={cls._id}>
+                          {cls.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="isActive" value="Status" />
+                    </div>
+                    <Select
+                      id="isActive"
+                      value={formData.isActive.toString()}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          isActive: event.target.value === "true",
+                        })
+                      }
+                    >
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+                    </Select>
+                  </div>
+
+                  {/* Avatar */}
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="avatar" value="Avatar (Optional)" />
+                    </div>
+                    <FileInput
+                      id="avatar"
+                      helperText="Upload a profile picture"
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          avatarImg: event.target.value,
+                        })
+                      }
+                    />
                   </div>
                 </div>
 
+                <div className="flex justify-end space-x-4 pt-4">
+                  <Button color="gray" onClick={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    theme={customThemeButton}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Spinner size="sm" className="mr-2" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-5 w-5" />
+                        {teacher ? "Update Teacher" : "Add Teacher"}
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-              </form>
-            </Modal.Body>
-          </Modal>
-
-        )
-      }
+            </form>
+          </Modal.Body>
+        </Modal>
+      )}
     </div>
   );
 };
