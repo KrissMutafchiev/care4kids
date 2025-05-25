@@ -10,15 +10,16 @@ import {
   Modal,
   Select,
 } from "flowbite-react";
-import { Trash2, Edit } from "lucide-react";
-import { useAlert } from "@/app/context/AlertContext";
-import {
-  IUser,
-  IInstitution,
-  IGroupClass,
-} from "@/types/interfaces";
+import { Trash2, Edit, Users } from "lucide-react";
+import { useAlert } from "@/components/providers/AlertProvider";
+import { IUser, IInstitution, IGroupClass } from "@/types/interfaces";
 import { USER_ROLE } from "@/utils/user-role.consts";
-import { deleteUser, fetchUsers ,createUser, updateUser} from "@/services/user-service";
+import {
+  deleteUser,
+  fetchUsers,
+  createUser,
+  updateUser,
+} from "@/services/user-service";
 import { fetchInstitutions } from "@/services/institution-service";
 import { fetchGroupClasses } from "@/services/group-class-service";
 
@@ -31,9 +32,7 @@ const TeachersManagement = () => {
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedTeacher, setSelectedTeacher] = useState<IUser | null>(
-    null
-  );
+  const [selectedTeacher, setSelectedTeacher] = useState<IUser | null>(null);
 
   const [formData, setFormData] = useState<any>({
     firstName: "",
@@ -48,7 +47,7 @@ const TeachersManagement = () => {
       setIsLoading(true);
       try {
         // Fetch institutions
-        const institutions = await fetchInstitutions()
+        const institutions = await fetchInstitutions();
         setInstitutions(institutions);
 
         if (institutions.length > 0 && institutions[0]._id) {
@@ -76,7 +75,10 @@ const TeachersManagement = () => {
   const fetchTeachers = async () => {
     setIsLoading(true);
     try {
-      const teachersData = await fetchUsers({ institutions: selectedInstitution, role: USER_ROLE.TEACHER });
+      const teachersData = await fetchUsers({
+        institutions: selectedInstitution,
+        role: USER_ROLE.TEACHER,
+      });
       setTeachers(teachersData);
     } catch (error: any) {
       showAlert(error.message || "Failed to fetch teachers", "error");
@@ -104,7 +106,7 @@ const TeachersManagement = () => {
             institution: selectedInstitution || "",
             groupClass: "",
             role: USER_ROLE.TEACHER,
-          }
+          },
     );
     setIsModalOpen(true);
   };
@@ -132,38 +134,38 @@ const TeachersManagement = () => {
       showAlert("All fields except GroupClass are required", "error");
       return;
     }
-  
+
     try {
       let result;
-  
+
       if (selectedTeacher) {
         result = await updateUser(selectedTeacher._id, formData);
       } else {
         result = await createUser(formData);
       }
-  
+
       if (!result) throw new Error("Invalid response from server");
-  
+
       await fetchTeachers();
-  
+
       showAlert(
         selectedTeacher
           ? "User updated successfully!"
-          : `User created successfully!`,'success'
+          : `User created successfully!`,
+        "success",
       );
-  
+
       closeModal();
     } catch (error: any) {
       showAlert(error.message || "Failed to save user", "error");
     }
   };
-  
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this teacher?")) return;
 
     try {
-      await deleteUser(id)
+      await deleteUser(id);
       setTeachers((prev) => prev.filter((t) => t._id !== id));
       showAlert("Teacher deleted successfully!", "success");
     } catch (error: any) {
@@ -181,72 +183,92 @@ const TeachersManagement = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Teachers Management</h1>
-        <Button onClick={() => openModal()} color="primary">
-          Add Teacher
-        </Button>
+    <div className="flex flex-col space-y-6">
+      <div className="flex items-center space-x-3">
+        <div className="p-3 bg-gradient-to-br from-teal-100 to-emerald-50 rounded-lg">
+          <Users className="h-6 w-6 text-teal-600" />
+        </div>
+        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">
+          Teachers Management
+        </h1>
       </div>
-      {/* Institution Filter */}
-      <div>
-        <Label htmlFor="institutionFilter" value="Filter by Institution" />
-        <Select
-          id="institutionFilter"
-          value={selectedInstitution}
-          onChange={e => setSelectedInstitution(e.target.value)}
-        >
-          <option value="">All Institutions</option>
-          {institutions.map(inst => (
-            <option key={inst._id} value={inst._id}>
-              {inst.name}
-            </option>
-          ))}
-        </Select>
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-gray-600">
+            Manage all teachers across institutions
+          </p>
+          <Button
+            onClick={() => openModal()}
+            color="success"
+            className="px-4 py-2"
+          >
+            <Users size={16} className="mr-2" /> Add Teacher
+          </Button>
+        </div>
+        {/* Institution Filter */}
+        <div>
+          <Label htmlFor="institutionFilter" value="Filter by Institution" />
+          <Select
+            id="institutionFilter"
+            value={selectedInstitution}
+            onChange={(e) => setSelectedInstitution(e.target.value)}
+          >
+            <option value="">All Institutions</option>
+            {institutions.map((inst) => (
+              <option key={inst._id} value={inst._id}>
+                {inst.name}
+              </option>
+            ))}
+          </Select>
+        </div>
+
+        {/* Teachers Table */}
+        <Table hoverable={true}>
+          <Table.Head>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Email</Table.HeadCell>
+            <Table.HeadCell>Institution</Table.HeadCell>
+            <Table.HeadCell>Group Class</Table.HeadCell>
+            <Table.HeadCell>Actions</Table.HeadCell>
+          </Table.Head>
+          <Table.Body>
+            {teachers.map((teacher) => (
+              <Table.Row key={teacher._id?.toString()}>
+                <Table.Cell>
+                  {teacher.firstName} {teacher.lastName}
+                </Table.Cell>
+                <Table.Cell>{teacher.email}</Table.Cell>
+                <Table.Cell>{teacher.institution?.name || "N/A"}</Table.Cell>
+                <Table.Cell>
+                  {teacher.groupClasses?.[0]?.name || "N/A"}
+                </Table.Cell>
+                <Table.Cell>
+                  <div className="flex space-x-4">
+                    <Button
+                      size="sm"
+                      color="info"
+                      onClick={() => openModal(teacher)}
+                    >
+                      <Edit size={16} />
+                    </Button>
+                    <Button
+                      size="sm"
+                      color="failure"
+                      onClick={() =>
+                        teacher._id && handleDelete(teacher._id.toString())
+                      }
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+
+        {/* Modal for Create/Update */}
       </div>
-
-      {/* Teachers Table */}
-      <Table hoverable={true}>
-        <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Email</Table.HeadCell>
-          <Table.HeadCell>Institution</Table.HeadCell>
-          <Table.HeadCell>Group Class</Table.HeadCell>
-          <Table.HeadCell>Actions</Table.HeadCell>
-        </Table.Head>
-        <Table.Body>
-          {teachers.map(teacher => (
-            <Table.Row key={teacher._id?.toString()}>
-              <Table.Cell>
-                {teacher.firstName} {teacher.lastName}
-              </Table.Cell>
-              <Table.Cell>{teacher.email}</Table.Cell>
-              <Table.Cell>{teacher.institution?.name || "N/A"}</Table.Cell>
-              <Table.Cell>{teacher.groupClasses?.[0]?.name || "N/A"}</Table.Cell>
-              <Table.Cell>
-                <div className="flex space-x-4">
-                  <Button
-                    size="sm"
-                    color="info"
-                    onClick={() => openModal(teacher)}
-                  >
-                    <Edit size={16} />
-                  </Button>
-                  <Button
-                    size="sm"
-                    color="failure"
-                    onClick={() => teacher._id && handleDelete(teacher._id.toString())}
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-
-      {/* Modal for Create/Update */}
       <Modal show={isModalOpen} onClose={closeModal}>
         <Modal.Header>
           {selectedTeacher ? "Edit Teacher" : "Add Teacher"}
@@ -258,7 +280,7 @@ const TeachersManagement = () => {
               <TextInput
                 id="firstName"
                 value={formData.firstName}
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({ ...formData, firstName: e.target.value })
                 }
                 required
@@ -269,7 +291,7 @@ const TeachersManagement = () => {
               <TextInput
                 id="lastName"
                 value={formData.lastName}
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({ ...formData, lastName: e.target.value })
                 }
                 required
@@ -281,7 +303,7 @@ const TeachersManagement = () => {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
                 required
@@ -292,13 +314,13 @@ const TeachersManagement = () => {
               <Select
                 id="institution"
                 value={formData.institution}
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({ ...formData, institution: e.target.value })
                 }
                 required
               >
                 <option value="">Select Institution</option>
-                {institutions.map(inst => (
+                {institutions.map((inst) => (
                   <option key={inst._id} value={inst._id}>
                     {inst.name}
                   </option>
@@ -310,12 +332,12 @@ const TeachersManagement = () => {
               <Select
                 id="groupClass"
                 value={formData.groupClass}
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({ ...formData, groupClass: e.target.value })
                 }
               >
                 <option value="">None</option>
-                {groupClasses.map(group => (
+                {groupClasses.map((group) => (
                   <option key={group._id} value={group._id}>
                     {group.name}
                   </option>

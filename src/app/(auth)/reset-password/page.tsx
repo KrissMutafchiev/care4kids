@@ -19,13 +19,13 @@ export default function ResetPassword() {
         //     return;
         // }
         //const  userId = 'ObjectId(67daf8f67fdd4b9d189e8c4d)'
-        const newPassword = 'care_4_k1ds_adm1n'
+        const newPassword = 'care_4_k1ds_teacher'
 
         
         const response = await fetch("/api/auth/reset-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId:'67daf8f67fdd4b9d189e8c4d', newPassword }),
+            body: JSON.stringify({ userId:'6831a83f653ca776f1f498ab', newPassword }),
         });
 
         const result = await response.json();

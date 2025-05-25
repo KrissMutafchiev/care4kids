@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 
-// Global is used here to maintain a cached connection across hot reloads
-// in development. This prevents connections growing exponentially
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections growing exponentially
+ * during API Route usage.
+ */
 let cached = global.mongoose;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-const connect = async () => {
+async function connectDB() {
   if (cached.conn) {
-    console.log("Using existing database connection");
     return cached.conn;
   }
 
@@ -20,26 +22,27 @@ const connect = async () => {
 
   if (!cached.promise) {
     const opts = {
-      dbName: "care4kids", // Explicitly specify the database name here
       bufferCommands: false,
+      dbName: "care4kids",
     };
 
     cached.promise = mongoose
       .connect(process.env.MONGODB_URI, opts)
       .then((mongoose) => {
-        console.log("MongoDB connection successfully established.");
+        console.log("MongoDB connected successfully");
         return mongoose;
       });
   }
 
   try {
     cached.conn = await cached.promise;
-    return cached.conn;
-  } catch (error) {
+  } catch (e) {
     cached.promise = null;
-    console.error("MongoDB connection error:", error.message);
-    throw new Error(`Error connecting to Mongoose: ${error.message}`);
+    console.error("MongoDB connection error:", e);
+    throw e;
   }
-};
 
-export default connect;
+  return cached.conn;
+}
+
+export default connectDB;

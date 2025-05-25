@@ -3,6 +3,8 @@
 .idea/
 # dependencies
 /node_modules
+**/tempobook/dynamic/
+**/tempobook/storyboards/
 /.pnp
 .pnp.js
 .yarn/install-state.gz

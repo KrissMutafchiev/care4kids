@@ -1,53 +1,171 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import Link from 'next/link'
+import Link from "next/link";
+import { Button, Navbar, DarkThemeToggle } from "flowbite-react";
 
 export default function Home() {
-
   return (
-    <main className="">
+    <main className="bg-white min-h-screen">
+      {/* Navigation Bar */}
+      <Navbar fluid className="shadow-sm py-4">
+        <Navbar.Brand href="/">
+          <Image
+            className="mr-3"
+            src="/logo.png"
+            alt="Care4Kids Logo"
+            width={150}
+            height={50}
+            priority
+          />
+        </Navbar.Brand>
+        <div className="flex md:order-2 gap-2">
+          <Link href="/login">
+            <Button gradientDuoTone="purpleToBlue">Sign In</Button>
+          </Link>
+          <Navbar.Toggle />
+        </div>
+        <Navbar.Collapse>
+          <Navbar.Link href="#" active>
+            Home
+          </Navbar.Link>
+          <Navbar.Link href="#">About</Navbar.Link>
+          <Navbar.Link href="#">Services</Navbar.Link>
+          <Navbar.Link href="#">Contact</Navbar.Link>
+        </Navbar.Collapse>
+      </Navbar>
 
-
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-      <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
-        <Image
-          className="w-24 h-20 mr-2"
-          src="/logo.png"
-          alt="logo"
-          width={400} height={300}
-        />
-      </a>
-      <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <Link href="/login"  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign In</Link>
-
-        <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-            <span className="sr-only">Open main menu</span>
-            <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
-            </svg>
-        </button>
+      {/* Hero Section */}
+      <div className="py-20 px-4 text-center bg-gradient-to-b from-white to-blue-50">
+        <div className="max-w-screen-xl mx-auto">
+          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl">
+            Childcare Management Made Simple
+          </h1>
+          <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48">
+            Care4Kids helps childcare centers, parents, and teachers collaborate
+            seamlessly for better early childhood education.
+          </p>
+          <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
+            <Button size="xl" gradientDuoTone="purpleToBlue">
+              Get Started
+            </Button>
+            <Button size="xl" color="light">
+              Learn More
+            </Button>
+          </div>
+        </div>
       </div>
-      <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-        <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-          <li>
-            <a href="#" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
-          </li>
-          <li>
-            <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
-          </li>
-          <li>
-            <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
-          </li>
-          <li>
-            <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
-          </li>
-        </ul>
-      </div>
-      </div>
-    </nav>
 
+      {/* Features Section */}
+      <div className="py-16 px-4 bg-white">
+        <div className="max-w-screen-xl mx-auto">
+          <h2 className="mb-8 text-3xl font-bold text-center text-gray-900">
+            Our Features
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md">
+              <div className="flex justify-center mb-4">
+                <Image
+                  src="/class-sun.png"
+                  alt="Class Management"
+                  width={80}
+                  height={80}
+                />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-center">
+                Class Management
+              </h3>
+              <p className="text-gray-500 text-center">
+                Organize classes, track attendance, and manage daily activities.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md">
+              <div className="flex justify-center mb-4">
+                <Image
+                  src="/happy.png"
+                  alt="Kid Reports"
+                  width={80}
+                  height={80}
+                />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-center">
+                Kid Reports
+              </h3>
+              <p className="text-gray-500 text-center">
+                Track child development, share updates, and document milestones.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md">
+              <div className="flex justify-center mb-4">
+                <Image
+                  src="/clock-1.png"
+                  alt="Parent Communication"
+                  width={80}
+                  height={80}
+                />
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-center">
+                Parent Communication
+              </h3>
+              <p className="text-gray-500 text-center">
+                Keep parents informed with real-time updates and notifications.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="p-4 bg-white md:p-8 lg:p-10 border-t">
+        <div className="mx-auto max-w-screen-xl text-center">
+          <div className="flex justify-center items-center mb-5">
+            <Image
+              src="/logo.png"
+              alt="Care4Kids Logo"
+              width={120}
+              height={40}
+            />
+          </div>
+          <p className="my-6 text-gray-500">
+            Simplifying childcare management for institutions, teachers, and
+            parents.
+          </p>
+          <ul className="flex flex-wrap justify-center items-center mb-6 text-gray-900">
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6">
+                Features
+              </a>
+            </li>
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6">
+                Pricing
+              </a>
+            </li>
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6">
+                Contact
+              </a>
+            </li>
+          </ul>
+          <span className="text-sm text-gray-500 sm:text-center">
+            © 2023-2024{" "}
+            <a href="#" className="hover:underline">
+              Care4Kids™
+            </a>
+            . All Rights Reserved.
+          </span>
+        </div>
+      </footer>
     </main>
   );
 }
