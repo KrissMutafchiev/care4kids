@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import UserNav from "@/components/layout/UserNav";
 import {
   LayoutDashboard,
@@ -13,6 +13,7 @@ import {
   Settings,
   Home,
   UserCircle,
+  LogOut,
 } from "lucide-react";
 import { fetchUsers } from "@/services/user-service";
 import { Spinner } from "flowbite-react";
@@ -196,6 +197,17 @@ const PanelLayout = ({ children }: any) => {
                 </li>
               );
             })}
+
+            {/* Logout Button */}
+            <li className="mt-auto pt-4 border-t border-gray-200">
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="flex w-full items-center p-2 text-gray-900 rounded-lg hover:bg-red-50 hover:text-red-700 group"
+              >
+                <LogOut className="w-5 h-5 text-gray-500 group-hover:text-red-600" />
+                <span className="ms-3">Logout</span>
+              </button>
+            </li>
           </ul>
         </div>
       </aside>
